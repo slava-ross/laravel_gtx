@@ -11,8 +11,8 @@ $factory->define(Comment::class, function (Faker $faker) {
     $created = $faker->dateTimeBetween('- 30 days', '-1 day');
     return [
         'title' => $title,
-        'id_city' => rand(1, 15),
-        'id_author' => rand(1, 10),
+        //'id_city' => rand(1, 15),
+        'user_id' => rand(1, 10),
         'rating' => rand(1, 10),
         'comment_text' => $comment_text,
         'created_at' => $created,
