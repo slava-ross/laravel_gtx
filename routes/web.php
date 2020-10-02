@@ -18,9 +18,9 @@ Route::get('/', function () {
 });
 */
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/', 'CityController@index')->name('city.index');
 Route::get('/comment', 'CommentController@index')->name('comment.index');
 Route::get('/comment/create', 'CommentController@create')->name('comment.create');
 Route::get('/comment/show/{id}', 'CommentController@show')->name('comment.show');

@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-//use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Comment;
 use App\User;
-//use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Storage;
 //use Illuminate\Support\Str;
 //use Illuminate\Support\Facades\DB;
@@ -24,7 +22,8 @@ class CommentController extends Controller
         /*$comments = Comment::join('users', 'id_author', '=', 'users.id')
             ->orderBy('comments.created_at', 'desc')
             ->paginate(4);
-*/
+        */
+
         $comments = User::find(1)->comments();
         dump($comments);
 
