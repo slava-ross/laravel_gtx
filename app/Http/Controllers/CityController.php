@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\Comment;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class CityController extends Controller
@@ -10,20 +12,19 @@ class CityController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index(Request $request)
     {
+        $cities = DB::table('cities')
+            ->join('city_comment', 'cities.id', '=', 'city_comment.city_id')
+            ->select('cities.*')
+            ->distinct()
+            ->get();
 
-        /*$comments = Comment::join('users', 'id_author', '=', 'users.id')
-            ->orderBy('comments.created_at', 'desc')
-            ->paginate(4);
-        */
+        //dd($cities);
 
-        $cities = City::find(1)->comments();
-        dump($comments);
-
-        return view('comments.index', compact('comments'));
+        return view('cities.index', compact('cities'));
     }
 
 }
