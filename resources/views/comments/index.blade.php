@@ -1,6 +1,13 @@
 @extends('layouts.layout')
 
 @section('content')
+    @if(isset($_GET['city_chosen']))
+        @if(count($comments)>0)
+
+        @else
+            <h2>Нет отзывов городу "<?=htmlspecialchars($_GET['city_chosen'])?>".</h2>
+        @endif
+    @endif
     <div class="row">
         @foreach($comments as $comment)
         <div class="col-6">
@@ -15,7 +22,7 @@
         </div>
         @endforeach
     </div>
-    @if(!isset($_GET['var']))
+    @if(!isset($_GET['city_chosen']))
         {{ $comments->links() }}
     @endif
 @endsection

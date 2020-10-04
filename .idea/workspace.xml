@@ -3,7 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="638d241f-8ad2-40ae-9e7e-5eb6e0465856" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CityController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CommentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CommentController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/factories/CityFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/factories/CityFactory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/factories/CommentFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/factories/CommentFactory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_09_14_192540_create_cities_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_09_14_192540_create_cities_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_09_17_013445_create_city_comment_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_09_17_013445_create_city_comment_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/cities/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/cities/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/comments/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/comments/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/comments/parts/form.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/comments/parts/form.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/layout.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/layout.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -180,7 +190,9 @@
       <workItem from="1600452624381" duration="1891000" />
       <workItem from="1600886222776" duration="1010000" />
       <workItem from="1601311087891" duration="200000" />
-      <workItem from="1601633749571" duration="16610000" />
+      <workItem from="1601633749571" duration="17333000" />
+      <workItem from="1601680695853" duration="125000" />
+      <workItem from="1601833447052" duration="13734000" />
     </task>
     <servers />
   </component>

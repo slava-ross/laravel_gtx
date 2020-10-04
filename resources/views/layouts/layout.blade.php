@@ -14,7 +14,7 @@
     <div class="container collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="col-6 navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">В начало<span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/">Главная<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active offset-3">
                 <a class="nav-link" href="{{ route('comment.create') }}">Создать отзыв<span class="sr-only">(current)</span></a>

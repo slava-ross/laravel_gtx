@@ -11,27 +11,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\User::class, 10)->create();
-        factory(\App\City::class, 15)->create();
-        factory(\App\Comment::class, 30)->create();
+        factory(\App\User::class, 5)->create();
+        factory(\App\City::class, 10)->create();
+        factory(\App\Comment::class, 20)->create();
 
         $comments = App\Comment::all();
 
         App\City::all()->each(function ($city) use ($comments) {
             $city->comments()->attach(
-                $comments->random(rand(1, 30))->pluck('id')->toArray()
+                $comments->random(rand(1, 20))->pluck('id')->toArray()
             );
         });
-
-        /*
-         public function run()
-        {
-           factory(App\User::class,3)->create();
-           $roles = factory(App\Role::class,3)->create();
-           App\User::All()->each(function ($user) use ($roles){
-              $user->roles()->saveMany($roles);
-           });
-        }
-         */
     }
 }

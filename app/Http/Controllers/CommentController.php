@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Comment;
+use App\City;
 use App\User;
 use Illuminate\Support\Facades\Storage;
 //use Illuminate\Support\Str;
@@ -18,15 +19,19 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
-
-        /*$comments = Comment::join('users', 'id_author', '=', 'users.id')
-            ->orderBy('comments.created_at', 'desc')
-            ->paginate(4);
-        */
-
-        $comments = User::find(1)->comments();
-        dump($comments);
-
+        if ($request->city_chosen) {
+            $comments = Comment::join('users', 'user_id', '=', 'users.id')
+                ->join('city_comment', 'comments.id', '=', 'comment_id')
+                ->leftJoin('cities', 'city_id', '=', 'cities.id')
+                ->where('cities.name', '=', $request->city_chosen)
+                ->orderBy('comments.created_at', 'desc')
+                ->get();
+        } else {
+            $comments = Comment::join('users', 'user_id', '=', 'users.id')
+                ->orderBy('comments.created_at', 'desc')
+                ->paginate(4);
+        }
+        //dd($comments);
         return view('comments.index', compact('comments'));
     }
 
