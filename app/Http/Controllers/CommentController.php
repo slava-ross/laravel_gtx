@@ -20,10 +20,24 @@ class CommentController extends Controller
     public function index(Request $request)
     {
         if ($request->city_chosen) {
-            $comments = Comment::join('users', 'user_id', '=', 'users.id')
-                ->join('city_comment', 'comments.id', '=', 'comment_id')
-                ->leftJoin('cities', 'city_id', '=', 'cities.id')
-                ->where('cities.name', '=', $request->city_chosen)
+            $comments = Comment::join('users as u', 'user_id', '=', 'u.id')
+                ->join('city_comment as cc', 'comments.id', '=', 'cc.comment_id')
+                ->leftJoin('cities as c', 'city_id', '=', 'c.id')
+                ->select(
+                    'comments.id',
+                    'title',
+                    'comment_text',
+                    'rating',
+                    'img',
+                    'comments.created_at',
+                    'user_id',
+                    'u.fio',
+                    'u.email',
+                    'u.phone',
+                    'c.id as city_id',
+                    'c.name'
+                )
+                ->where('c.name', '=', $request->city_chosen)
                 ->orderBy('comments.created_at', 'desc')
                 ->get();
         } else {
@@ -42,7 +56,8 @@ class CommentController extends Controller
      */
     public function create()
     {
-        return view('comments.create');
+        $cities = City::all();
+        return view('comments.create', compact('cities'));
     }
 
     /**
@@ -55,21 +70,37 @@ class CommentController extends Controller
     {
         $comment = new Comment();
         $comment->title = $request->title;
-        //$comment->short_title = Str::length($request->title) > 30 ? Str::substr($request->title, 0, 30) . '...' : $request->title;
         $comment->comment_text = $request->comment_text;
-
-        //$comment->id_author = \Auth::user()->id;
-        $comment->id_author = rand(1, 10);
-        $comment->id_city = rand(1, 15);
-        $comment->rating = rand(1, 10);
-
+        $comment->rating = $request->rating;
+        //$comment->user_id = Auth::user()->id;
+        //$comment->city_id = rand(1, 10);
+        $comment->user_id = rand(1, 5);
         if ($request->file('img')) {
             $path = Storage::putFile('public', $request->file('img'));
             $url = Storage::url($path);
             $comment->img = $url;
         }
-        $comment->save();
-        return redirect()->route('comment.index')->with('success', 'Отзыв успешно создан!');
+
+        if (!empty($request->cities)) {
+            $cities = $request->cities;
+        }
+        else {
+            $cities = City::all('id');
+        }
+        foreach($cities as $city_id) {
+            $city = City::find($city_id);
+            $city->comments()->save($comment);
+        }
+/*
+        $comments = App\Comment::all();
+        App\City::all()->each(function ($city) use ($comments) {
+            $city->comments()->attach(
+                $comments->random(rand(1, 20))->pluck('id')->toArray()
+            );
+        });
+*/
+        //$comment->save();
+        return redirect()->route('/')->with('success', 'Отзыв успешно создан!');
     }
 
     /**
@@ -80,22 +111,27 @@ class CommentController extends Controller
      */
     public function show($id)
     {
-        $comment = Comment::join('users', 'comments.id', '=', 'users.id')->find($id);
+        $comment = Comment::find($id);
+        $user = $comment->user;
+        //dd($user, $comment);
+        /*$comment = Comment::join('users', 'comments.user_id', '=', 'users.id as user_id')
+            ->find($id);*/
         if (!$comment) {
-            return redirect()->route('comment.index')->withErrors('Что Вы пытаетесь этим доказать?');
+            return redirect()->route('comment.index')->withErrors('Что Вы задумали?');
         }
-        return view('comments.show', compact('comment'));
+        return view('comments.show', ['comment'=>$comment,'user'=>$user]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit($id)
     {
-        //
+        $comment = Comment::find($id);
+        return view('comments.edit', compact('comment'));
     }
 
     /**

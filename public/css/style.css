@@ -1,17 +1,13 @@
 body {
     background: #fff;
 }
+
 nav {
     margin-bottom: 15px;
 }
 
-.nav-link {
-    font-size: large;
-    font-weight: bold;
-}
-
 .card {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .card-img {
@@ -22,7 +18,7 @@ nav {
     background-repeat: no-repeat;
 }
 
-.card-img, .card-descr, .card-author, .card-date {
+.card-img, .card-author, .card-date, .card-descr {
     margin-bottom: 10px;
 }
 
@@ -30,3 +26,10 @@ nav {
     height: 500px;
 }
 
+.card-btn {
+    display: flex;
+}
+
+.card-btn a {
+    margin-right: 10px;
+}

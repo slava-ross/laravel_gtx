@@ -12,7 +12,7 @@
         @foreach($comments as $comment)
         <div class="col-6">
             <div class="card">
-                <div class="card-header"><h2>{{ $comment->title }}</h2></div>
+                <div class="card-header"><h2>{{ Str::length($comment->title) > 30 ? Str::substr($comment->title, 0, 30) . '...' : $comment->title }}</h2></div>
                 <div class="card-body">
                     <div class="card-img" style="background-image: url({{ $comment->img ?? asset('images/default.jpg') }})"></div>
                     <div class="card-author">Автор: {{ $comment->fio }}</div>
