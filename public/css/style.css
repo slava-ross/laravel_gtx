@@ -18,8 +18,13 @@ nav {
     background-repeat: no-repeat;
 }
 
-.card-img, .card-author, .card-date, .card-descr {
+.card-img, .card-author, .card-date, .card-descr, .card-rating {
     margin-bottom: 10px;
+
+}
+
+.card-author span, .card-date  span, .card-descr  span, .card-rating  span {
+    font-weight: bold;
 }
 
 .card-img__max {

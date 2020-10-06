@@ -1,6 +1,6 @@
-@extends('layouts.layout', ['title' => 'Редактирование отзыва'])
+@extends('layouts.layout', ['title' => "Редактирование отзыва №$comment->id"])
 @section('content')
-    <form action="{{ route('comment.update', ['id'=>$comment->id]) }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('comment.update', ['comment'=>$comment->id]) }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
         <h3>Редактировать отзыв</h3>

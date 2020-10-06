@@ -19,7 +19,9 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->city_chosen) {
+        //dd($request);
+        $city = $request->city_chosen;
+        if ($city) {
             $comments = Comment::join('users as u', 'user_id', '=', 'u.id')
                 ->join('city_comment as cc', 'comments.id', '=', 'cc.comment_id')
                 ->leftJoin('cities as c', 'city_id', '=', 'c.id')
@@ -37,7 +39,7 @@ class CommentController extends Controller
                     'c.id as city_id',
                     'c.name'
                 )
-                ->where('c.name', '=', $request->city_chosen)
+                ->where('c.name', '=', $city)
                 ->orderBy('comments.created_at', 'desc')
                 ->get();
         } else {
@@ -46,7 +48,7 @@ class CommentController extends Controller
                 ->paginate(4);
         }
         //dd($comments);
-        return view('comments.index', compact('comments'));
+        return view('comments.index', compact('comments', 'city'));
     }
 
     /**
@@ -56,8 +58,9 @@ class CommentController extends Controller
      */
     public function create()
     {
-        $cities = City::all();
-        return view('comments.create', compact('cities'));
+        $cities = City::all('id', 'name');
+        $new_comment = true;
+        return view('comments.create', compact('cities', 'new_comment'));
     }
 
     /**
@@ -68,10 +71,13 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        $comment = new Comment();
-        $comment->title = $request->title;
-        $comment->comment_text = $request->comment_text;
-        $comment->rating = $request->rating;
+        $comment = new Comment;
+        $comment->fill($request->all());
+        if ($request->file('img')) {
+            $path = Storage::putFile('public', $request->file('img'));
+            $url = Storage::url($path);
+            $comment->img = $url;
+        }
         //$comment->user_id = Auth::user()->id;
         //$comment->city_id = rand(1, 10);
         $comment->user_id = rand(1, 5);
@@ -91,15 +97,7 @@ class CommentController extends Controller
             $city = City::find($city_id);
             $city->comments()->save($comment);
         }
-/*
-        $comments = App\Comment::all();
-        App\City::all()->each(function ($city) use ($comments) {
-            $city->comments()->attach(
-                $comments->random(rand(1, 20))->pluck('id')->toArray()
-            );
-        });
-*/
-        //$comment->save();
+
         return redirect()->route('/')->with('success', 'Отзыв успешно создан!');
     }
 
@@ -113,13 +111,15 @@ class CommentController extends Controller
     {
         $comment = Comment::find($id);
         $user = $comment->user;
+
         //dd($user, $comment);
-        /*$comment = Comment::join('users', 'comments.user_id', '=', 'users.id as user_id')
-            ->find($id);*/
+        /*
+        $comment = Comment::join('users', 'comments.user_id', '=', 'users.id as user_id')->find($id);
+        */
         if (!$comment) {
             return redirect()->route('comment.index')->withErrors('Что Вы задумали?');
         }
-        return view('comments.show', ['comment'=>$comment,'user'=>$user]);
+        return view('comments.show', compact('comment', 'user'));
     }
 
     /**
@@ -131,7 +131,8 @@ class CommentController extends Controller
     public function edit($id)
     {
         $comment = Comment::find($id);
-        return view('comments.edit', compact('comment'));
+        $new_comment = false;
+        return view('comments.edit', compact('comment','new_comment'));
     }
 
     /**
@@ -143,9 +144,27 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $comment = Comment::find($id);
+        $comment->fill($request->all());
+        if ($request->file('img')) {
+            dd($request->file);
+            $path = Storage::putFile('public', $request->file('img'));
+            $url = Storage::url($path);
+            $comment->img = $url;
+        }
+        else {
+            $comment->img = null;
+        }
+        $comment->update();
 
+        /* thinking about
+        $comment->fill($request->except('bla-bla-bla'));
+        $comment->save();
+        $comment->city()->sync($request->city);
+        */
+
+        return redirect()->route('comment.show', ['comment' => $comment->id])->with('success', 'Отзыв успешно отредактирован!');
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -154,6 +173,8 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Comment::find($id)->delete();
+
+        return redirect()->route('comment.index')->with('success', 'Отзыв успешно удалён!');
     }
 }

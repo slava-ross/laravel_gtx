@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'title', 'comment_text', 'rating',
+    ];
+
     public function cities()
     {
         return $this->belongsToMany('App\City');
