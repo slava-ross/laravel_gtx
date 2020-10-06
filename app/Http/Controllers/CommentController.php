@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentRequest;
 use Illuminate\Http\Request;
 use App\Comment;
 use App\City;
@@ -69,7 +70,7 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CommentRequest $request)
     {
         $comment = new Comment;
         $comment->fill($request->all());
@@ -142,12 +143,11 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CommentRequest $request, $id)
     {
         $comment = Comment::find($id);
         $comment->fill($request->all());
         if ($request->file('img')) {
-            dd($request->file);
             $path = Storage::putFile('public', $request->file('img'));
             $url = Storage::url($path);
             $comment->img = $url;
