@@ -25,7 +25,6 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
-        //dd($request);
         $city = $request->city_chosen;
         if ($city) {
             $comments = Comment::join('users as u', 'user_id', '=', 'u.id')
@@ -45,15 +44,12 @@ class CommentController extends Controller
                     'c.id as city_id',
                     'c.name'
                 )
-                ->where('c.name', '=', $city)
+                ->where('c.id', '=', $city)
                 ->orderBy('comments.created_at', 'desc')
                 ->get();
         } else {
-            $comments = Comment::join('users', 'user_id', '=', 'users.id')
-                ->orderBy('comments.created_at', 'desc')
-                ->paginate(4);
+            return redirect()->route('/');
         }
-        //dd($comments);
         return view('comments.index', compact('comments', 'city'));
     }
 

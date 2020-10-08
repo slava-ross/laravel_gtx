@@ -38,3 +38,12 @@ img {
     height: auto;
     max-width: 100%;
 }
+.modal-body {
+    text-align: center;
+}
+.modal-body span {
+    font-weight: bold;
+}
+.modal-footer {
+    justify-content: space-around;
+}

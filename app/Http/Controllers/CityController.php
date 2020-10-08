@@ -16,6 +16,12 @@ class CityController extends Controller
      */
     public function index(Request $request)
     {
+        //$ip_address = $request->ip();
+        $ip_address = '78.85.1.5';
+        $dadata = new \Dadata\DadataClient(getenv('DADATA_TOKEN'), null);
+        $response = $dadata->iplocate($ip_address);
+        $city_name = $response['value'];
+
         $cities = DB::table('cities')
             ->join('city_comment', 'cities.id', '=', 'city_comment.city_id')
             ->select('cities.*')
@@ -24,7 +30,7 @@ class CityController extends Controller
 
         //dd($cities);
 
-        return view('cities.index', compact('cities'));
+        return view('cities.index', compact('city_name', 'cities'));
     }
 
 }
