@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\User;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -36,5 +38,14 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function authenticated(Request $request, $user)
+    {
+        if ($user->status !== User::STATUS_ACTIVE) {
+            $this->guard()->logout();
+            return back()->with('error', 'Вы должны подтвердить учётную запись. Пожалуйста проверьте Ваш e-mail');
+        }
+        return redirect()->intended($this->redirectPath());
     }
 }

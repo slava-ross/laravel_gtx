@@ -15,7 +15,8 @@
         "hflabs/dadata": "^20.7",
         "laravel/framework": "^7.24",
         "laravel/tinker": "^2.0",
-        "laravel/ui": "2.4"
+        "laravel/ui": "2.4",
+        "wildbit/postmark-php": "^4.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",

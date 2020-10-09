@@ -1323,27 +1323,46 @@
       <Position>7</Position>
       <DataType>varchar(100)|0s</DataType>
     </column>
-    <column id="394" parent="344" name="created_at">
+    <column id="394" parent="344" name="status">
       <Position>8</Position>
-      <DataType>timestamp|0s</DataType>
+      <DataType>smallint(6)|0s</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>9</DefaultExpression>
     </column>
-    <column id="395" parent="344" name="updated_at">
+    <column id="395" parent="344" name="verify_token">
       <Position>9</Position>
+      <DataType>varchar(255)|0s</DataType>
+    </column>
+    <column id="396" parent="344" name="created_at">
+      <Position>10</Position>
       <DataType>timestamp|0s</DataType>
     </column>
-    <index id="396" parent="344" name="users_email_unique">
+    <column id="397" parent="344" name="updated_at">
+      <Position>11</Position>
+      <DataType>timestamp|0s</DataType>
+    </column>
+    <index id="398" parent="344" name="users_email_unique">
       <ColNames>email</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <key id="397" parent="344" name="PRIMARY">
+    <index id="399" parent="344" name="users_verify_token_unique">
+      <ColNames>verify_token</ColNames>
+      <Unique>1</Unique>
+      <Type>btree</Type>
+    </index>
+    <key id="400" parent="344" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="398" parent="344" name="users_email_unique">
+    <key id="401" parent="344" name="users_email_unique">
       <ColNames>email</ColNames>
       <UnderlyingIndexName>users_email_unique</UnderlyingIndexName>
+    </key>
+    <key id="402" parent="344" name="users_verify_token_unique">
+      <ColNames>verify_token</ColNames>
+      <UnderlyingIndexName>users_verify_token_unique</UnderlyingIndexName>
     </key>
   </database-model>
 </dataSource>

@@ -17,3 +17,4 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/', 'CityController@index')->name('/');
 Route::resource('/comment','CommentController');
+Route::get('/verify/{token}', 'Auth\RegisterController@verify')->name('register.verify');
