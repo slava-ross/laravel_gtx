@@ -85,8 +85,13 @@ class CommentController extends Controller
             $cities = $request->cities;
         }
         else {
-            $cities = City::all('id');
+            $cityItems = City::all('id')->toArray();
+            $cities = [];
+            foreach($cityItems as $item) {
+                $cities[] = $item['id'];
+            }
         }
+        //dd($cities);
         foreach($cities as $city_id) {
             $city = City::find($city_id);
             $city->comments()->save($comment);
