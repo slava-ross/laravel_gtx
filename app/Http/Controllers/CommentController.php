@@ -27,6 +27,7 @@ class CommentController extends Controller
     {
         $city = $request->city_chosen;
         if ($city) {
+            session(['city_chosen' => $city]);
             $comments = Comment::join('users as u', 'user_id', '=', 'u.id')
                 ->join('city_comment as cc', 'comments.id', '=', 'cc.comment_id')
                 ->leftJoin('cities as c', 'city_id', '=', 'c.id')
