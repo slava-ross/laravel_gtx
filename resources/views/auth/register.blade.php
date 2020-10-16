@@ -75,6 +75,22 @@
                             </div>
                         </div>
 
+                        <!-- Captcha -->
+                        <div class="form-group row">
+                            <label for="" class="col-md-4 col-form-label text-md-right"></label>
+                            <img src="{{ captcha_src() }}" alt="captcha" class="captcha-img" data-refresh-config="default">
+                            <a href="#" id="refresh">
+                                <span class="glyphicon glyphicon-refresh"></span>
+                            </a>
+                        </div>
+                        <div class="form-group row">
+                            <label for="captcha" class="col-md-4 col-form-label text-md-right">{{ __('Капча') }}</label>
+                            <div class="col-md-6">
+                                <input id="captcha" class="form-control" type="text" name="captcha" required>
+                            </div>
+                        </div>
+                        <!-- EndCaptcha -->
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

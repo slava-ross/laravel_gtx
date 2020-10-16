@@ -1,4 +1,4 @@
-@extends('layouts.layout', ['title' => "Отзывы по городу $city"])
+@extends('layouts.layout', ['title' => "Отзывы по городу $cityName"])
 
 @section('content')
     @if(isset($city))
