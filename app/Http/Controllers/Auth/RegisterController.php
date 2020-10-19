@@ -59,6 +59,7 @@ class RegisterController extends Controller
             'fio' => ['required', 'string', 'max:128'],
             'email' => ['required', 'string', 'email', 'max:128', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'captcha' => ['required','captcha'],
         ]);
     }
 
@@ -88,7 +89,6 @@ class RegisterController extends Controller
             'verify_token' => Str::random(),
             'status' => User::STATUS_INACTIVE,
         ]);
-        //dd($user);
         Mail::to($user->email)->send(new VerifyMail($user));
 
         return $user;
