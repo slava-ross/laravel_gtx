@@ -78,10 +78,13 @@
                         <!-- Captcha -->
                         <div class="form-group row">
                             <label for="" class="col-md-4 col-form-label text-md-right"></label>
-                            <img src="{{ captcha_src() }}" alt="captcha" class="captcha-img" data-refresh-config="default">
-                            <a href="#" id="refresh">
-                                <span class="glyphicon glyphicon-refresh"></span>
-                            </a>
+                            <div class="col-md-6">
+                                <img src="{{ captcha_src() }}" alt="captcha" class="captcha-img" data-refresh-config="default">
+                                <a href="#" id="refresh">
+                                    <!--span class="glyphicon glyphicon-refresh " aria-hidden="true"></span-->
+                                    <span class="fas fa-sync" aria-hidden="true"></span>
+                                </a>
+                            </div>
                         </div>
                         <div class="form-group row">
                             <label for="captcha" class="col-md-4 col-form-label text-md-right">{{ __('Капча') }}</label>

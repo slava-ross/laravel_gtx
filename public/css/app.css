@@ -6672,6 +6672,10 @@ a.close.disabled {
   color: #212529;
 }
 
+.captcha-img {
+    margin-right: 10px;
+}
+
 .carousel {
   position: relative;
 }
