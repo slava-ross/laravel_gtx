@@ -15,8 +15,8 @@ class CityController extends Controller
      */
     public function index(Request $request)
     {
-        $ip_address = $request->ip();
-        //$ip_address = '78.85.1.5'; // Ижевск
+        //$ip_address = $request->ip();
+        $ip_address = '78.85.1.5'; // Ижевск
         $city = new City;
         $city_name = $city->getCityName($ip_address);
         if(empty($city_name)) {

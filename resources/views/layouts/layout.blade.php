@@ -8,6 +8,10 @@
     <title>{{ $title }}</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css">
+    <!--link href="{{ asset('css/autocomplete.css') }}" rel="stylesheet" type="text/css"-->
+    <!--link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"-->
+    <!--link href="https://cdn.jsdelivr.net/npm/suggestions-jquery@20.3.0/dist/css/suggestions.min.css" rel="stylesheet" /-->
+    <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('images/favicon.png') }}" rel="shortcut icon" type="image/x-icon">
 </head>
 <body>
@@ -63,10 +67,11 @@
 @yield('modal')
 
 <script src="{{ asset('js/app.js') }}"></script>
-
-<!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script-->
-<!--script src="{{ asset('js/bootstrap.min.js') }}"></script-->
-
 <script src="{{ asset('js/script.js') }}"></script>
+<!--script src="{{ asset('js/autocomplete.js') }}"></script-->
+<!--script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script-->
+<script src="{{ asset('js/select2.min.js') }}"></script>
+<!--script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script-->
+<script src="https://cdn.jsdelivr.net/npm/suggestions-jquery@20.3.0/dist/js/jquery.suggestions.min.js"></script>
 </body>
 </html>

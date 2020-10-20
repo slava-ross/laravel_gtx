@@ -8,12 +8,28 @@
 </div>
 @if($new_comment)
     <div class="form-group">
+        <label for="city">Город:</label>
+        <input id="city" type="text" class="form-control" placeholder="Начните вводить город">
+    </div>
+
+    <div class="form-group">
+
+        <label for="cities">Выберите один или несколько городов (Нет выбора - все города):</label>
+        <select name="sities[]" id="cities" class="select2-city-multiple form-control" multiple>
+            @foreach($cities as $city)
+                <option value="{{ $city->id }}">{{ $city->name }}</option>
+            @endforeach
+        </select>
+
+        {{--
         <label for="cities">Город:</label>
         <select size="5" name="cities[]" id="cities" class="form-control" multiple>
             @foreach($cities as $city)
                 <option value="{{ $city->id }}">{{ $city->name }}</option>
             @endforeach
         </select>
+        --}}
+
     </div>
 @endif
 <div class="form-group">

@@ -19,7 +19,7 @@ class City extends Model
             return null;
         }
         else {
-            return $response['value'];
+            return $response['data']['city'];
         }
     }
 }
