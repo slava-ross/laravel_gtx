@@ -132,6 +132,10 @@
       <path value="$PROJECT_DIR$/vendor/justinrainbow/json-schema" />
       <path value="$PROJECT_DIR$/vendor/barryvdh/reflection-docblock" />
       <path value="$PROJECT_DIR$/vendor/barryvdh/laravel-ide-helper" />
+      <path value="$PROJECT_DIR$/vendor/hflabs/dadata" />
+      <path value="$PROJECT_DIR$/vendor/wildbit/postmark-php" />
+      <path value="$PROJECT_DIR$/vendor/mews/captcha" />
+      <path value="$PROJECT_DIR$/vendor/intervention/image" />
     </include_path>
   </component>
   <component name="ProjectId" id="1hUoXXPZmVPbutgXZ5lJAbqwc7K" />
@@ -146,13 +150,20 @@
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+<<<<<<< HEAD
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+=======
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/js" />
+>>>>>>> d1466700bbf6d1a35a786eb2eab1b4de9e0f0b61
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\xampp\htdocs\laravel_gtx\public\js" />
+      <recent name="E:\xampp\htdocs\laravel_gtx\resources\lang" />
       <recent name="E:\xampp\htdocs\laravel_gtx\resources\views\comments" />
+      <recent name="E:\xampp\htdocs\laravel_gtx\resources\views\cities" />
     </key>
   </component>
   <component name="RunManager">
@@ -176,8 +187,6 @@
       <workItem from="1600291516127" duration="3249000" />
       <workItem from="1600321116980" duration="3139000" />
       <workItem from="1600452624381" duration="1891000" />
-      <workItem from="1600685434092" duration="648000" />
-      <workItem from="1600693782145" duration="905000" />
     </task>
     <servers />
   </component>
@@ -189,29 +198,52 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="495" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1600095396725" />
-    <state width="1876" height="277" key="GridCell.Tab.0.bottom" timestamp="1600088432751">
+    <state x="690" y="274" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1602234993446">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="277" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1600088432751" />
-    <state width="1876" height="277" key="GridCell.Tab.0.center" timestamp="1600088432751">
+    <state x="690" y="274" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1602234993446" />
+    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1601987883592">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="277" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1600088432751" />
-    <state width="1876" height="277" key="GridCell.Tab.0.left" timestamp="1600088432750">
+    <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1601987883592" />
+    <state width="1876" height="277" key="GridCell.Tab.0.bottom" timestamp="1603229880585">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="277" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1600088432750" />
-    <state width="1876" height="277" key="GridCell.Tab.0.right" timestamp="1600088432751">
+    <state width="1876" height="277" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1603229880585" />
+    <state width="1876" height="277" key="GridCell.Tab.0.center" timestamp="1603229880585">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="277" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600088432751" />
-    <state x="795" y="442" key="NewPhpFileDialog" timestamp="1600112832105">
+    <state width="1876" height="277" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1603229880585" />
+    <state width="1876" height="277" key="GridCell.Tab.0.left" timestamp="1603229880585">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="795" y="442" key="NewPhpFileDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1600112832105" />
+    <state width="1876" height="277" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1603229880585" />
+    <state width="1876" height="277" key="GridCell.Tab.0.right" timestamp="1603229880585">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1876" height="277" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1603229880585" />
+    <state x="795" y="442" key="NewPhpFileDialog" timestamp="1602263439031">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="795" y="442" key="NewPhpFileDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1602263439031" />
     <state x="859" y="396" key="com.intellij.database.actions.DdlActions$CreateObject$1" timestamp="1600097038305">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="859" y="396" key="com.intellij.database.actions.DdlActions$CreateObject$1/0.0.1920.1040@0.0.1920.1040" timestamp="1600097038304" />
+    <state x="667" y="119" width="585" height="801" key="find.popup" timestamp="1601982448889">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="667" y="119" width="585" height="801" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1601982448889" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Mail/Auth/VerifyMail.php</url>
+          <line>6</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

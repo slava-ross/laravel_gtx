@@ -10,13 +10,17 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    const STATUS_DELETED = 0;
+    const STATUS_INACTIVE = 9;
+    const STATUS_ACTIVE = 10;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'fio', 'email', 'password',
+        'fio', 'email', 'phone', 'password', 'verify_token', 'status',
     ];
 
     /**

@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
-//use App\Http\Controllers\Controller;
+use App\Http\Requests\CommentRequest;
 use Illuminate\Http\Request;
 use App\Comment;
+use App\City;
 use App\User;
-//use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Storage;
 //use Illuminate\Support\Str;
 //use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except('index','show');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,15 +25,35 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
-
-        /*$comments = Comment::join('users', 'id_author', '=', 'users.id')
-            ->orderBy('comments.created_at', 'desc')
-            ->paginate(4);
-*/
-        $comments = User::find(1)->comments();
-        dump($comments);
-
-        return view('comments.index', compact('comments'));
+        $cityId = $request->city_chosen;
+        if ($cityId) {
+            session(['city_chosen' => $cityId]);
+            //dd($request->session()->all());
+            $cityName = City::find($cityId)->name;
+            $comments = Comment::join('users as u', 'user_id', '=', 'u.id')
+                ->join('city_comment as cc', 'comments.id', '=', 'cc.comment_id')
+                ->leftJoin('cities as c', 'city_id', '=', 'c.id')
+                ->select(
+                    'comments.id',
+                    'title',
+                    'comment_text',
+                    'rating',
+                    'img',
+                    'comments.created_at',
+                    'user_id',
+                    'u.fio',
+                    'u.email',
+                    'u.phone',
+                    'c.id as city_id',
+                    'c.name'
+                )
+                ->where('c.id', '=', $cityId)
+                ->orderBy('comments.created_at', 'desc')
+                ->get();
+            return view('comments.index', compact('comments','cityId','cityName'));
+        } else {
+            return redirect()->route('/');
+        }
     }
 
     /**
@@ -38,7 +63,9 @@ class CommentController extends Controller
      */
     public function create()
     {
-        return view('comments.create');
+        $cities = City::all('id', 'name');
+        $new_comment = true;
+        return view('comments.create', compact('cities', 'new_comment'));
     }
 
     /**
@@ -47,25 +74,32 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CommentRequest $request)
     {
-        $comment = new Comment();
-        $comment->title = $request->title;
-        //$comment->short_title = Str::length($request->title) > 30 ? Str::substr($request->title, 0, 30) . '...' : $request->title;
-        $comment->comment_text = $request->comment_text;
-
-        //$comment->id_author = \Auth::user()->id;
-        $comment->id_author = rand(1, 10);
-        $comment->id_city = rand(1, 15);
-        $comment->rating = rand(1, 10);
-
+        $comment = new Comment;
+        $comment->fill($request->all());
+        $comment->user_id = \Auth::user()->id;
         if ($request->file('img')) {
             $path = Storage::putFile('public', $request->file('img'));
             $url = Storage::url($path);
             $comment->img = $url;
         }
-        $comment->save();
-        return redirect()->route('comment.index')->with('success', 'Отзыв успешно создан!');
+        if (!empty($request->cities)) {
+            $cities = $request->cities;
+        }
+        else {
+            $cityItems = City::all('id')->toArray();
+            $cities = [];
+            foreach($cityItems as $item) {
+                $cities[] = $item['id'];
+            }
+        }
+        //dd($cities);
+        foreach($cities as $city_id) {
+            $city = City::find($city_id);
+            $city->comments()->save($comment);
+        }
+        return redirect()->route('/')->with('success', 'Отзыв успешно создан!');
     }
 
     /**
@@ -76,22 +110,33 @@ class CommentController extends Controller
      */
     public function show($id)
     {
-        $comment = Comment::join('users', 'comments.id', '=', 'users.id')->find($id);
+        $comment = Comment::find($id);
         if (!$comment) {
-            return redirect()->route('comment.index')->withErrors('Что Вы пытаетесь этим доказать?');
+            return redirect()->route('/')->withErrors('Что Вы задумали?');
         }
-        return view('comments.show', compact('comment'));
+        $user = $comment->user;
+
+        /* Не ORM
+        $comment = Comment::join('users', 'comments.user_id', '=', 'users.id as user_id')->find($id);
+        */
+
+        return view('comments.show', compact('comment', 'user'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit($id)
     {
-        //
+        $comment = Comment::find($id);
+        if ($comment->user_id != \Auth::user()->id) {
+            return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
+        }
+        $new_comment = false;
+        return view('comments.edit', compact('comment','new_comment'));
     }
 
     /**
@@ -101,11 +146,31 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CommentRequest $request, $id)
     {
-        //
-    }
+        $comment = Comment::find($id);
+        if ($comment->user_id != \Auth::user()->id) {
+            return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
+        }
+        $comment->fill($request->all());
+        if ($request->file('img')) {
+            $path = Storage::putFile('public', $request->file('img'));
+            $url = Storage::url($path);
+            $comment->img = $url;
+        }
+        else {
+            $comment->img = null;
+        }
+        $comment->update();
 
+        /* thinking about
+        $comment->fill($request->except('bla-bla-bla'));
+        $comment->save();
+        $comment->city()->sync($request->city);
+        */
+
+        return redirect()->route('comment.show', ['comment' => $comment->id])->with('success', 'Отзыв успешно отредактирован!');
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -114,6 +179,11 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comment = Comment::find($id);
+        if ($comment->user_id != \Auth::user()->id) {
+            return redirect()->route('/')->withErrors('Вы не можете удалить данный отзыв!');
+        }
+        $comment->delete();
+        return redirect()->route('/')->with('success', 'Отзыв успешно удалён!');
     }
 }

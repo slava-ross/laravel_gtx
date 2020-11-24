@@ -4,16 +4,9 @@ body {
 nav {
     margin-bottom: 15px;
 }
-
-.nav-link {
-    font-size: large;
-    font-weight: bold;
-}
-
 .card {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
-
 .card-img {
     height: 200px;
     background-position: center center;
@@ -21,12 +14,36 @@ nav {
     background-size: cover;
     background-repeat: no-repeat;
 }
-
-.card-img, .card-descr, .card-author, .card-date {
-    margin-bottom: 10px;
+.card-header {
+    text-align: center;
 }
+.card-img, .card-author, .card-date, .card-descr, .card-rating {
+    margin-bottom: 10px;
 
+}
+.card-author span, .card-date  span, .card-descr  span, .card-rating  span {
+    font-weight: bold;
+}
 .card-img__max {
     height: 500px;
 }
-
+.card-btn {
+    display: flex;
+}
+.card-btn a {
+    margin-right: 10px;
+}
+img {
+    display: inline-block;
+    height: auto;
+    max-width: 100%;
+}
+.modal-body {
+    text-align: center;
+}
+.modal-body span {
+    font-weight: bold;
+}
+.modal-footer {
+    justify-content: space-around;
+}

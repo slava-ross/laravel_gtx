@@ -5,7 +5,13 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Auth\VerifyMail;
+use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -50,10 +56,21 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'fio' => ['required', 'string', 'max:128'],
+            'email' => ['required', 'string', 'email', 'max:128', 'unique:users'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'captcha' => ['required','captcha'],
         ]);
+    }
+
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        event(new Registered($user = $this->create($request->all())));
+
+        return redirect()
+            ->route('login')
+            ->with('success', 'Проверьте ваш e-mail и перейдите по ссылке в письме для завершения регистрации');
     }
 
     /**
@@ -64,10 +81,32 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
+        $user = User::create([
+            'fio' => $data['fio'],
             'email' => $data['email'],
+            'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
+            'verify_token' => Str::random(),
+            'status' => User::STATUS_INACTIVE,
         ]);
+        Mail::to($user->email)->send(new VerifyMail($user));
+
+        return $user;
+    }
+
+    public function verify($token)
+    {
+        if (!$user = User::where('verify_token', $token)->first()) {
+            return redirect()->route('login')
+                ->with('error', 'Извините, пользователь не может быть идентифицирован');
+        }
+
+        $user->status = User::STATUS_ACTIVE;
+        $user->verify_token = null;
+        $user->email_verified_at = now();
+        $user->save();
+
+        return redirect()->route('login')
+            ->with('success', 'Ваш почтовый ящик успешно подтверждён. Можете выполнить вход');
     }
 }

@@ -18,7 +18,7 @@ class CreateCityCommentTable extends Migration
             $table->bigInteger('city_id')->unsigned();
             $table->bigInteger('comment_id')->unsigned();
             $table->foreign('city_id')->references('id')->on('cities');
-            $table->foreign('comment_id')->references('id')->on('comments');
+            $table->foreign('comment_id')->references('id')->on('comments')->onDelete('cascade');
         });
     }
 
