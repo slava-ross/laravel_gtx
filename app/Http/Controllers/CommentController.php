@@ -25,35 +25,16 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
-        $cityId = $request->city_chosen;
-        if ($cityId) {
-            session(['city_chosen' => $cityId]);
-            //dd($request->session()->all());
-            $cityName = City::find($cityId)->name;
-            $comments = Comment::join('users as u', 'user_id', '=', 'u.id')
-                ->join('city_comment as cc', 'comments.id', '=', 'cc.comment_id')
-                ->leftJoin('cities as c', 'city_id', '=', 'c.id')
-                ->select(
-                    'comments.id',
-                    'title',
-                    'comment_text',
-                    'rating',
-                    'img',
-                    'comments.created_at',
-                    'user_id',
-                    'u.fio',
-                    'u.email',
-                    'u.phone',
-                    'c.id as city_id',
-                    'c.name'
-                )
-                ->where('c.id', '=', $cityId)
-                ->orderBy('comments.created_at', 'desc')
-                ->get();
-            return view('comments.index', compact('comments','cityId','cityName'));
-        } else {
-            return redirect()->route('/');
+        $cityName = $request->city_name;
+        $cityId = $request->city_id;
+        if (empty($cityId)) {
+            session(['city_chosen' => $cityName]);
+            $city = City::getCityByName($cityName);
+            $cityId = $city->id;
         }
+        //dd('city_id=' . $cityId . ' city_name=' . $cityName);
+        $comments = Comment::getCommentsByCityId($cityId);
+        return view('comments.index', compact('comments','cityId','cityName'));
     }
 
     /**

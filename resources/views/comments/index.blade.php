@@ -3,7 +3,7 @@
 @section('content')
     @if(isset($city))
         @if(count($comments) == 0)
-            <h2>Нет отзывов городу "<?=htmlspecialchars($city)?>".</h2>
+            <h2>Нет отзывов по городу "<?=htmlspecialchars($city)?>".</h2>
         @endif
     @endif
     <div class="row">

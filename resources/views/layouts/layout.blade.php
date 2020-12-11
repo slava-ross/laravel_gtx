@@ -70,7 +70,7 @@
 <script src="{{ asset('js/script.js') }}"></script>
 <!--script src="{{ asset('js/autocomplete.js') }}"></script-->
 <!--script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script-->
-<script src="{{ asset('js/select2.min.js') }}"></script>
+<!--script src="{{ asset('js/select2.min.js') }}"></script-->
 <!--script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script-->
 <script src="https://cdn.jsdelivr.net/npm/suggestions-jquery@20.3.0/dist/js/jquery.suggestions.min.js"></script>
 </body>

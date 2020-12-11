@@ -11,24 +11,31 @@ class CityController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function index(Request $request)
     {
-        //$ip_address = $request->ip();
-        $ip_address = '78.85.1.5'; // Ижевск
-        $city = new City;
-        $city_name = $city->getCityName($ip_address);
-        if(empty($city_name)) {
-            $cities = DB::table('cities')
-                ->join('city_comment', 'cities.id', '=', 'city_comment.city_id')
-                ->select('cities.*')
-                ->distinct()
-                ->get();
-                return view('cities.index', compact('cities'));
+        if ($request->session()->has('city_chosen')) {
+            $city_name = $request->session()->get('city_chosen');
+            //dd('Session city name: '.$city_name);
+            $city = City::getCityByName($city_name);
+            //dd('Session city object: '.$city);
+            return redirect()->route('comment.index', ['city_id' => $city->id, 'city_name' => $city_name]);
         }
         else {
-            return view('cities.index', compact('city_name'));
+            $ip_address = $request->ip();
+            if ($ip_address === "127.0.0.1") { // Заглушка для dev_mode
+                //$ip_address = '78.85.1.5'; // Ижевск
+            }
+            $city_name = City::getCityNameByIP($ip_address);
+            if(empty($city_name)) { // Не смогли определить город
+                $cities = City::getCitesOfComments();
+                return view('cities.index', compact('cities'));
+            }
+            else {
+                // Модальное окно с подтверждением города
+                return view('cities.index', compact('city_name'));
+            }
         }
     }
 }
