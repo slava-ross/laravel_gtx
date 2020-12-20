@@ -8,6 +8,9 @@ use App\Comment;
 use App\City;
 use App\User;
 use Illuminate\Support\Facades\Storage;
+use function GuzzleHttp\Promise\all;
+use JavaScript;
+
 //use Illuminate\Support\Str;
 //use Illuminate\Support\Facades\DB;
 
@@ -21,20 +24,32 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index(Request $request)
     {
         $cityName = $request->city_name;
         $cityId = $request->city_id;
-        if (empty($cityId)) {
-            session(['city_chosen' => $cityName]);
+        session(['city_chosen' => $cityName]);
+        //dd('city_id=' . $cityId . ' city_name=' . $cityName);
+        if (empty($cityId)) { // Пришли из модального окна только с именем города
             $city = City::getCityByName($cityName);
+            if (empty($city)) { // Новый город
+                $city = City::create([
+                    'name' => $cityName,
+                ]);
+            }
             $cityId = $city->id;
         }
         //dd('city_id=' . $cityId . ' city_name=' . $cityName);
+
         $comments = Comment::getCommentsByCityId($cityId);
-        return view('comments.index', compact('comments','cityId','cityName'));
+        /*JavaScript::put([
+            'foo_token' => 'qwerty'
+        ]);*/
+
+            //return view('comments.index', compact('comments','cityId','cityName'));
+        return view('comments.index', compact('comments','cityName'));
     }
 
     /**

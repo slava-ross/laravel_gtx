@@ -8,6 +8,15 @@ use Illuminate\Support\Facades\DB;
 
 class City extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+    ];
+
     public function comments()
     {
         return $this->belongsToMany('App\Comment');

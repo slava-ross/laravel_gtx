@@ -15,21 +15,35 @@
                     </button>
                 </div>
             @endif
+        @else
+            <div class="row city-choosing d-none">
+                <form action="{{ url('/comment') }}" method="get">
+                    @csrf
+                    <div class="col-md-6">
+                        <h3 class="form-group mb-3">Выбор города</h3>
+                        <div class="form-group mb-3">
+                            <!-- label class="mb-2" for="city">Город:</label -->
+                            <input id="city" class="form-control city" type="text" name="city_name" placeholder="Начните писать ваш город ...">
+                            <input type="submit" value="Выбрать" class="btn btn-primary mt-3">
+                        </div>
+                    </div>
+                </form>
+            </div>
         @endif
 @endsection
 
 {{-- Модальное окно выбора города --}}
 @section('modal')
     @if(!empty($city_name))
-        <div id="cityModalBox" class="modal fade">
+        <div id="cityModal" class="modal fade">
             <div class="modal-dialog modal-sm">
                 <div class="modal-content">
                     <div class="modal-body">
                         Ваш город: <span>{{ $city_name }}</span>?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="city-confirm" class="btn btn-primary" data-dismiss="modal">Да</button>
-                        <button type="button" id="city-another" class="btn btn-secondary">Выбрать другой</button>
+                        <button type="button" id="city-confirm" class="btn btn-primary">Да</button>
+                        <button type="button" id="city-another" class="btn btn-secondary" data-dismiss="modal">Выбрать другой</button>
                     </div>
                 </div>
             </div>

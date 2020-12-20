@@ -33,7 +33,7 @@ class VerifyMail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Подтверждение регистрации в ' . getenv('APP_NAME'))
+            ->subject('Подтверждение регистрации в ' . env('APP_NAME'))
             ->markdown('emails.auth.verify');
     }
 }

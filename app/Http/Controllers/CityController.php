@@ -17,15 +17,15 @@ class CityController extends Controller
     {
         if ($request->session()->has('city_chosen')) {
             $city_name = $request->session()->get('city_chosen');
-            //dd('Session city name: '.$city_name);
             $city = City::getCityByName($city_name);
-            //dd('Session city object: '.$city);
-            return redirect()->route('comment.index', ['city_id' => $city->id, 'city_name' => $city_name]);
+            $success = $request->session()->get('success') ?? NULL; // transit data to flashes
+            $errors = $request->session()->get('errors') ?? NULL;
+            return redirect()->route('comment.index', ['city_id' => $city->id, 'city_name' => $city_name])->with('success', $success)->with('errors', $errors);
         }
         else {
             $ip_address = $request->ip();
             if ($ip_address === "127.0.0.1") { // Заглушка для dev_mode
-                //$ip_address = '78.85.1.5'; // Ижевск
+                $ip_address = '78.85.1.5'; // Ижевск
             }
             $city_name = City::getCityNameByIP($ip_address);
             if(empty($city_name)) { // Не смогли определить город

@@ -1,9 +1,9 @@
 @extends('layouts.layout', ['title' => "Отзывы по городу $cityName"])
 
 @section('content')
-    @if(isset($city))
+    @if(isset($cityName))
         @if(count($comments) == 0)
-            <h2>Нет отзывов по городу "<?=htmlspecialchars($city)?>".</h2>
+            <h2>Нет отзывов по городу "<?=htmlspecialchars($cityName)?>"</h2>
         @endif
     @endif
     <div class="row">
@@ -22,7 +22,7 @@
         </div>
         @endforeach
     </div>
-    @if(!isset($city))
+    @if(!isset($cityName))
         {{ $comments->links() }}
     @endif
 @endsection
