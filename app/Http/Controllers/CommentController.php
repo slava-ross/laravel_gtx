@@ -49,7 +49,8 @@ class CommentController extends Controller
         ]);*/
 
             //return view('comments.index', compact('comments','cityId','cityName'));
-        return view('comments.index', compact('comments','cityName'));
+        $title = "Отзывы по городу $cityName";
+        return view('comments.index', compact('comments','cityName','title'));
     }
 
     /**
@@ -111,11 +112,6 @@ class CommentController extends Controller
             return redirect()->route('/')->withErrors('Что Вы задумали?');
         }
         $user = $comment->user;
-
-        /* Не ORM
-        $comment = Comment::join('users', 'comments.user_id', '=', 'users.id as user_id')->find($id);
-        */
-
         return view('comments.show', compact('comment', 'user'));
     }
 
@@ -181,5 +177,21 @@ class CommentController extends Controller
         }
         $comment->delete();
         return redirect()->route('/')->with('success', 'Отзыв успешно удалён!');
+    }
+    /**
+     * Get all comments of a certain author.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function getAuthorsComments($id)
+    {
+//        if (\Auth::check()) {
+            $comments = Comment::getCommentsByAuthor($id);
+            $fio = $comments->first()->fio;
+            $title = "Отзывы автора $fio";
+            return view('comments.index', compact('comments', 'fio', 'title'));
+//        }
+//        return redirect()->route('/')->withErrors('Вы не можете просматривать отзывы определённого автора');
     }
 }

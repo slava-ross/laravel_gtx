@@ -28,7 +28,6 @@ class AjaxController extends Controller
         json_encode(array_values($categoryList->toArray()));
 
         */
-        $comments = Comment::getCommentsByCityName($cityName)->toJson();
-        return $comments;
+
     }
 }

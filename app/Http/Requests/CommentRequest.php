@@ -28,7 +28,6 @@ class CommentRequest extends FormRequest
             'comment_text' => 'required|min:10|max:255',
             'img' => 'mimes:jpeg,png|max:8000',
             'rating' => 'required|min:1|max:5',
-
         ];
     }
 }

@@ -58,4 +58,25 @@ class Comment extends Model
             ->paginate(4);
         return $comments;
     }
+
+    public static function getCommentsByAuthor($authorId)
+    {
+        $comments = parent::join('users as u', 'user_id', '=', 'u.id')
+            ->select(
+                'comments.id',
+                'title',
+                'comment_text',
+                'rating',
+                'img',
+                'comments.created_at',
+                'user_id',
+                'u.fio',
+                'u.email',
+                'u.phone'
+            )
+            ->where('u.id', '=', $authorId)
+            ->orderBy('comments.created_at', 'desc')
+            ->paginate(4);
+        return $comments;
+    }
 }

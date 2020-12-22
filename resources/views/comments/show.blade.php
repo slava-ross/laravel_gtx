@@ -56,18 +56,21 @@
         </div>
     --}}
     @auth()
-        <div class="modal fade" id="authorModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel"
+        <div class="modal fade" id="authorModal" tabindex="-1" role="dialog" aria-labelledby="authorModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <div>Автор: {{ $user->fio }}</div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" id="mediumBody">
-                        <div>the result to be displayed apply here
-                            <!-- the result to be displayed apply here -->
+                    <div class="modal-body" id="author-modal-body">
+                        <div class="card-body">
+                            <div class="card-email"><span>E-mail:</span> {{ $user->email }}</div>
+                            <div class="card-phone"><span>Phone:</span> {{ $user->phone }}</div>
+                            <a class="nav-link author-comments" href="{{ route('comment.author', ['id'=>$user->id]) }}">Посмотреть все отзывы автора</a>
                         </div>
                     </div>
                 </div>
