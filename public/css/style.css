@@ -17,13 +17,6 @@ nav {
 .card-header {
     text-align: center;
 }
-.card-img, .card-author, .card-date, .card-descr, .card-rating {
-    margin-bottom: 10px;
-
-}
-.card-author span, .card-date  span, .card-descr  span, .card-rating  span {
-    font-weight: bold;
-}
 .card-img__max {
     height: 500px;
 }
@@ -49,4 +42,40 @@ img {
 }
 .modal-footer {
     justify-content: space-around;
+}
+.author-info {
+    padding: 0;
+}
+
+.city-shell {
+    display: flex;
+    flex-direction: row;
+    justify-items: flex-start;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.city-item__choice {
+    background-color: #e4e4e4;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    display: list-item;
+    text-align: -webkit-match-parent;
+    margin: 5px 5px 5px 0px;
+    padding-right: 5px;
+}
+.city-item__remove {
+    box-sizing: content-box;
+    height: 10px;
+    width: 10px;
+    cursor: pointer;
+    padding: 0 5px;
+    /*margin: 0 5px;*/
+}
+.city-item__remove:hover {
+    background-color: orange;
+    border-radius: 50%;
+}
+.city-multiple {
+    cursor: pointer;
 }

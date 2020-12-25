@@ -61,6 +61,10 @@ class Comment extends Model
 
     public static function getCommentsByAuthor($authorId)
     {
+        /*
+         * Без учёта городов
+         */
+        /*
         $comments = parent::join('users as u', 'user_id', '=', 'u.id')
             ->select(
                 'comments.id',
@@ -73,6 +77,27 @@ class Comment extends Model
                 'u.fio',
                 'u.email',
                 'u.phone'
+            )
+            ->where('u.id', '=', $authorId)
+            ->orderBy('comments.created_at', 'desc')
+            ->paginate(4);
+        */
+        $comments = parent::join('users as u', 'user_id', '=', 'u.id')
+            ->join('city_comment as cc', 'comments.id', '=', 'cc.comment_id')
+            ->leftJoin('cities as c', 'city_id', '=', 'c.id')
+            ->select(
+                'comments.id',
+                'title',
+                'comment_text',
+                'rating',
+                'img',
+                'comments.created_at',
+                'user_id',
+                'u.fio',
+                'u.email',
+                'u.phone',
+                'c.id as city_id',
+                'c.name as city_name'
             )
             ->where('u.id', '=', $authorId)
             ->orderBy('comments.created_at', 'desc')

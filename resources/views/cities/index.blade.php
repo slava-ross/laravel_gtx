@@ -22,7 +22,6 @@
                     <div class="col-md-6">
                         <h3 class="form-group mb-3">Выбор города</h3>
                         <div class="form-group mb-3">
-                            <!-- label class="mb-2" for="city">Город:</label -->
                             <input id="city" class="form-control city" type="text" name="city_name" placeholder="Начните писать ваш город ...">
                             <input type="submit" value="Выбрать" class="btn btn-primary mt-3">
                         </div>

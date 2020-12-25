@@ -3,22 +3,21 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-
                 <div class="card-header"><h2>{{ $comment->title }}</h2></div>
                 <div class="card-body">
-                    <div class="card-img card-img__max" style="background-image: url({{ $comment->img ?? asset('images/default.jpg')}})"></div>
-                    <div class="card-descr"><span>Отзыв:</span> {{ $comment->comment_text }}</div>
-                    @guest()
-                        <div class="card-author"><span>Автор:</span> {{ $user->fio }}</div>
-                    @endguest
-                    @auth()
-                        <div class="card-author">
-                            <span>Автор:</span>
+                    <div class="card-img card-img__max mb-1" style="background-image: url({{ $comment->img ?? asset('images/default.jpg')}})"></div>
+                    <div class="card-descr mb-1"><span class="font-weight-bold">Отзыв:</span> {{ $comment->comment_text }}</div>
+                    <div class="card-author mb-1">
+                        <span class="font-weight-bold">Автор:</span>
+                        @guest()
+                            {{ $user->fio }}
+                        @endguest
+                        @auth()
                             <a class="nav-link d-inline-block author-info" href="#">{{ $user->fio }}</a>
-                        </div>
-                    @endauth
-                    <div class="card-rating"><span>Рейтинг:</span> {{ $comment->rating }}</div>
-                    <div class="card-date"><span>Отзыв создан:</span> {{ $comment->created_at->diffForHumans() }}</div>
+                        @endauth
+                    </div>
+                    <div class="card-rating mb-1"><span class="font-weight-bold">Рейтинг:</span> {{ $comment->rating }}</div>
+                    <div class="card-date mb-1"><span class="font-weight-bold">Отзыв создан:</span> {{ $comment->created_at->diffForHumans() }}</div>
                     <div class="card-btn">
                         <a href="{{ route('/') }}" class="btn btn-outline-primary">На главную</a>
                         @auth

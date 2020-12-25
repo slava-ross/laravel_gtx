@@ -71,8 +71,9 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(CommentRequest $request)
+    public function store(Request $request)
     {
+        $cities = $request->cities;
         $comment = new Comment;
         $comment->fill($request->all());
         $comment->user_id = \Auth::user()->id;
@@ -81,18 +82,27 @@ class CommentController extends Controller
             $url = Storage::url($path);
             $comment->img = $url;
         }
-        if (!empty($request->cities)) {
-            $cities = $request->cities;
-        }
-        else {
-            $cityItems = City::all('id')->toArray();
-            $cities = [];
-            foreach($cityItems as $item) {
-                $cities[] = $item['id'];
+        $citiesIdArray = []; // Массив для хранения id городов
+
+        if (!empty($cities)) {
+            foreach ($cities as $cityName){
+                $city = City::getCityByName($cityName);
+                if (empty($city)) { // Новый город
+                    $city = City::create([
+                        'name' => $cityName,
+                    ]);
+                }
+                $citiesIdArray[] = $city->id;
             }
         }
-        //dd($cities);
-        foreach($cities as $city_id) {
+        else { // Если пустой список городов - сохраняем комментарий для всех
+            $cityItems = City::all('id')->toArray();
+            foreach($cityItems as $item){
+                $citiesIdArray[] = $item['id'];
+            }
+        }
+
+        foreach($citiesIdArray as $city_id) {
             $city = City::find($city_id);
             $city->comments()->save($comment);
         }
