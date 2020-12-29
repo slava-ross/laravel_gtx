@@ -9,7 +9,12 @@ $(document).ready(function() {
             captcha.prop('src', response);
         });
     });
+
+    // Выключение отображения flash-сообщений
+    window.setTimeout(function () {
+        $(".flash").fadeTo(500, 0).slideUp(500, function () {
+            $(this).remove();
+        });
+    }, 7000);
+
 });
-
-
-

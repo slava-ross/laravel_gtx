@@ -22,12 +22,85 @@
                         <a href="{{ route('/') }}" class="btn btn-outline-primary">На главную</a>
                         @auth
                             @if (Auth::user()->id == $comment->user_id)
+
                                 <a href="{{ route('comment.edit', ['comment'=>$comment->id]) }}" class="btn btn-outline-success">Редактировать</a>
-                                <form action="{{ route('comment.destroy', ['comment'=>$comment->id]) }}" method="post" onsubmit="if (confirm('Точно удалить отзыв?')) { return true } else { return false }">
+
+                                {{-- Без Ajax --
+                                <form action="{{ route('comment.destroy', ['comment'=>$comment->id]) }}" method="POST" onsubmit="if (confirm('Точно удалить отзыв?')) { return true } else { return false }">
                                     @csrf
                                     @method('DELETE')
                                     <input type="submit" class="btn btn-outline-danger" value="Удалить">
                                 </form>
+                                --}}
+
+                                <form action="{{ route('comment.destroy', $comment->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="submit" id="delete-comment" class="btn btn-outline-danger delete-comment" data-id="{{ $comment->id }}" value="Удалить">
+                                </form>
+
+                                    {{--<form action="{{ route('comment.destroy', $comment->id) }}" method="POST">
+
+                                        <a data-toggle="modal" id="smallButton" data-target="#smallModal"
+                                           data-attr="{{ route('comment.show', $comment->id) }}" title="show">
+                                            <i class="fas fa-eye text-success  fa-lg"></i>
+                                        </a>
+
+                                        <a class="text-secondary" data-toggle="modal" id="mediumButton" data-target="#mediumModal"
+                                           data-attr="{{ route('comment.edit', $comment->id) }}">
+                                            <i class="fas fa-edit text-gray-300"></i>
+                                        </a>
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit" title="delete" style="border: none; background-color:transparent;">
+                                            <i class="fas fa-trash fa-lg text-danger"></i>
+                                        </button>
+                                    </form>--}}
+
+
+
+
+                                {{--<!-- small modal -->
+                                <div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="smallModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body" id="smallBody">
+                                                <div>
+                                                    <!-- the result to be displayed apply here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>--}}
+
+                                {{--<!-- medium modal -->
+                                <div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body" id="mediumBody">
+                                                <div>
+                                                    <!-- the result to be displayed apply here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>--}}
+
+
+
                             @endif
                         @endauth
                     </div>
@@ -39,21 +112,6 @@
 
 {{-- Модальное окно информации об авторе --}}
 @section('modal')
-    {{--
-        <div id="cityModal" class="modal fade">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        Ваш город: <span>{{ $city_name }}</span>?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="city-confirm" class="btn btn-primary">Да</button>
-                        <button type="button" id="city-another" class="btn btn-secondary" data-dismiss="modal">Выбрать другой</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    --}}
     @auth()
         <div class="modal fade" id="authorModal" tabindex="-1" role="dialog" aria-labelledby="authorModalLabel"
              aria-hidden="true">

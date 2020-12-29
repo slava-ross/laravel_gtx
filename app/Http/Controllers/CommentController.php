@@ -30,7 +30,9 @@ class CommentController extends Controller
     {
         $cityName = $request->city_name;
         $cityId = $request->city_id;
-        session(['city_chosen' => $cityName]);
+        if (!$request->session()->has('city_chosen')) {
+            session(['city_chosen' => $cityName]);
+        }
         //dd('city_id=' . $cityId . ' city_name=' . $cityName);
         if (empty($cityId)) { // Пришли из модального окна только с именем города
             $city = City::getCityByName($cityName);
@@ -177,16 +179,18 @@ class CommentController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
         $comment = Comment::find($id);
         if ($comment->user_id != \Auth::user()->id) {
-            return redirect()->route('/')->withErrors('Вы не можете удалить данный отзыв!');
+            return \Response::json(['error' => 'Вы не можете удалить данный отзыв!'], 403);
+            //return redirect()->route('/')->withErrors('Вы не можете удалить данный отзыв!');
         }
         $comment->delete();
-        return redirect()->route('/')->with('success', 'Отзыв успешно удалён!');
+        return \Response::json(['success' => 'true']);
+        //return redirect()->route('/')->with('success', 'Отзыв успешно удалён!');
     }
     /**
      * Get all comments of a certain author.

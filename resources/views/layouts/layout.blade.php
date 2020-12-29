@@ -55,7 +55,7 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="container container-main">
     @include('layouts.parts.flashes')
     @yield('content')
 </div>

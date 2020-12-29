@@ -1,14 +1,14 @@
 $(document).ready(function() {
 
     // Выключение отображения flash-сообщений
-    window.setTimeout(function() {
-        $(".flash").fadeTo(500, 0).slideUp(500, function(){
+    window.setTimeout(function () {
+        $(".flash").fadeTo(500, 0).slideUp(500, function () {
             $(this).remove();
         });
     }, 5000);
 
     // Информация об авторе
-    $("a.author-info").on('click', function(e) {
+    $("a.author-info").on('click', function (e) {
         e.preventDefault();
         $("#authorModal").modal('show');
     });
@@ -17,47 +17,69 @@ $(document).ready(function() {
     $("#cityModal").modal('show');
 
     // City choosing modal events
-    $("#city-confirm").on('click', function() {
+    $("#city-confirm").on('click', function () {
         const cityName = $(".modal-body>span").text();
-        document.location.href='/comment?city_name=' + cityName;
+        document.location.href = '/comment?city_name=' + cityName;
     });
 
-    $("#city-another").on('click', function() {
+    $("#city-another").on('click', function () {
         $(".city-choosing").removeClass("d-none").addClass("d-block");
-        //$(".city-choosing");
     });
+
+    // flash-message elements creating
+    function createErrorFlash(message, flashType) {
+        let alertElement = document.createElement('div');
+        alertElement.className = 'alert alert-' + flashType + ' alert-dismissible fade show flash';
+        alertElement.setAttribute('role', 'alert');
+
+        let alertButton = document.createElement('button');
+        alertButton.setAttribute('type', 'button');
+        alertButton.className = 'close';
+        alertButton.dataset.dismiss = 'alert';
+        alertButton.setAttribute('aria-label', 'Close');
+
+        let alertCloseSpan = document.createElement('span');
+        alertCloseSpan.setAttribute('aria-hidden', 'true');
+        alertCloseSpan.innerHTML = '&times;';
+
+        alertButton.appendChild(alertCloseSpan);
+        alertElement.innerText = message;
+        alertElement.appendChild(alertButton);
+
+        return alertElement;
+    }
+
+    //const errorFlash = createErrorFlash('Это ошибка!', 'danger');
+    //const successFlash = createErrorFlash('Это успешное сообщение!', 'success');
+
+    //$('.container-main').prepend(errorFlash);
+    //$('.container').prepend(successFlash);
 
     // dadata - подсказка города
     var token = '06437c5f9078834928053139b09331cd4c2a17d8';
-    //alert(foo_token);
     var defaultFormatResult = $.Suggestions.prototype.formatResult;
-
     function formatResult(value, currentValue, suggestion, options) {
         var newValue = suggestion.data.city;
         suggestion.value = newValue;
         return defaultFormatResult.call(this, newValue, currentValue, suggestion, options);
     }
-
     function formatSelected(suggestion) {
         return suggestion.data.city;
     }
-
     $(".city").suggestions({
         token: token,
         type: "ADDRESS",
         hint: false,
         bounds: "city",
         constraints: {
-            locations: { city_type_full: "город" }
+            locations: {city_type_full: "город"}
         },
         formatResult: formatResult,
         formatSelected: formatSelected,
-        onSelect: function(suggestion) {
-            //console.log(suggestion);
+        onSelect: function (suggestion) {
         }
     });
     // end dadata
-
 
     $('.city-multiple').suggestions({
         token: token,
@@ -65,29 +87,28 @@ $(document).ready(function() {
         hint: false,
         bounds: "city",
         constraints: {
-            locations: { city_type_full: "город" }
+            locations: {city_type_full: "город"}
         },
         formatResult: formatResult,
         formatSelected: formatSelected,
-        onSelect: function(suggestion) {
+        onSelect: function (suggestion) {
             cityName = suggestion.data.city;
             let deleteFlag = false;
 
             // Удаление существующего города из списка и скрытого селекта
-            $("#city-select option").each(function(){
+            $("#city-select option").each(function () {
                 if (cityName == $(this).val()) {
                     $(this).remove();
                     deleteFlag = true;
                 }
             });
-            if(deleteFlag) {
-                $("#city-shell li").each(function(){
+            if (deleteFlag) {
+                $("#city-shell li").each(function () {
                     if (cityName == $(this).text().slice(1)) {
                         $(this).remove();
                     }
                 });
-            }
-            else {
+            } else {
                 // Добавление города в список выбранных
                 let cityShell = document.getElementById('city-shell');
                 let newLi = document.createElement('li');
@@ -113,13 +134,105 @@ $(document).ready(function() {
         }
     });
 
-    $('#city-shell').on('click', '.city-item__remove', function() {
+    $('#city-shell').on('click', '.city-item__remove', function () {
         let liCityItem = $(this).parent();
         $(this).remove();
         let itemCityName = liCityItem.text();
         liCityItem.remove();
         $("#city-select option[value=" + itemCityName + "]").remove();
     });
+
+    /* Удаление отзыва */
+
+    $('body').on('click', '#delete-comment', function (e) {
+        e.preventDefault();
+        let comment_id = $(this).data("id");
+        let token = $('input[name="_token"]').attr('value');
+        if (confirm("Точно удалить отзыв?")) {
+            $.ajax({
+                type: 'DELETE',
+                headers: {'X-CSRF-Token': token},
+                dataType: 'json',
+                url: "/comment/" + comment_id,
+                data: {
+                    "id": comment_id,
+                    "_token": token
+                },
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                success: function (data) {
+                    console.log(data);
+                    document.location.href = '/';
+                },
+                complete: function() {
+                    $('#loader').hide();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(JSON.stringify(jqXHR));
+                    console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                    console.warn(jqXHR.responseText);
+                    $('#loader').hide();
+                },
+                timeout: 8000
+            });
+        }
+    });
+});
+
+/*
+        // display a modal (small modal)
+        $(document).on('click', '#smallButton', function(event) {
+        event.preventDefault();
+        let href = $(this).attr('data-attr');
+        $.ajax({
+        url: href,
+        beforeSend: function() {
+        $('#loader').show();
+    },
+        // return the result
+        success: function(result) {
+        $('#smallModal').modal("show");
+        $('#smallBody').html(result).show();
+    },
+        complete: function() {
+        $('#loader').hide();
+    },
+        error: function(jqXHR, testStatus, error) {
+        console.log(error);
+        alert("Page " + href + " cannot open. Error:" + error);
+        $('#loader').hide();
+    },
+        timeout: 8000
+    })
+    });
+
+        // display a modal (medium modal)
+        $(document).on('click', '#mediumButton', function(event) {
+        event.preventDefault();
+        let href = $(this).attr('data-attr');
+        $.ajax({
+        url: href,
+        beforeSend: function() {
+        $('#loader').show();
+    },
+        // return the result
+        success: function(result) {
+        $('#mediumModal').modal("show");
+        $('#mediumBody').html(result).show();
+    },
+        complete: function() {
+        $('#loader').hide();
+    },
+        error: function(jqXHR, testStatus, error) {
+        console.log(error);
+        alert("Page " + href + " cannot open. Error:" + error);
+        $('#loader').hide();
+    },
+        timeout: 8000
+    })
+    });
+*/
 
     /*
              document.getElementById('submit').onclick = function() {
@@ -148,31 +261,9 @@ $(document).ready(function() {
             }
      */
 
-    /*$('.select2-city-multiple').select2({
-        tags: true,
-        tokenSeparators: [',', ' ']
-    });*/
 
-    /*
-    $(document).ready(function(){
 
-	$('#cart-btn').on('click', function() {
-		//var clickedElement = $(this);
-		console.log('action');
-		$.ajax({
-			dataType: 'json',
-			url: 'ajax.php?action=add_to_cart&item_id=' + $(this).attr("attr-id"),
-			success: function( cont ) {
-				if ( cont == 'fault' ) {
-					alert( cont );
-				} else {
-					$(".cart a").text( 'CART ('+cont+')' );
-				}
-			}
-		});
-	});
-});
-
+/*
 $(document).ready(function(){
 
 	$('.deleting').on('click', function() {
@@ -180,7 +271,7 @@ $(document).ready(function(){
 		$.ajax({
 			dataType: 'json',
 			url: 'ajax.php?action=del&item_id=' + $(this).attr("attr-id"),
-			success: function( cont ) {
+	7		success: function( cont ) {
 				if ( cont == 'deleted' ) {
 					clickedElement.parent().parent().hide("fast", function(){});
 				}
@@ -263,23 +354,3 @@ $(document).ready(function(){
         });
 
      */
-
-    /*        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: '/ajax/' + cityName,
-            headers: {
-                'X-CSRF-Token': '{{ csrf_token() }}',
-            },
-            success: function (content) {
-                console.log(content);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(JSON.stringify(jqXHR));
-                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                console.warn(jqXHR.responseText);
-            }
-        });
-    */
-
-});
