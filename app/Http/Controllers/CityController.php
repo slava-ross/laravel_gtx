@@ -25,17 +25,17 @@ class CityController extends Controller
         else {
             $ip_address = $request->ip();
             if ($ip_address === "127.0.0.1") { // Заглушка для dev_mode
-                //$ip_address = '78.85.1.5'; // Ижевск
+                 $ip_address = '78.85.1.5'; // Ижевск (Закомментировать в dev_mode для получения списка городов с отзывами)
             }
             $city_name = City::getCityNameByIP($ip_address);
             if(empty($city_name)) { // Не смогли определить город
                 $cities = City::getCitesOfComments();
-                return view('cities.index', compact('cities'));
             }
             else {
                 // Модальное окно с подтверждением города
-                return view('cities.index', compact('city_name'));
+                $cities = City::getMostCommentedCitiesPrior();
             }
+            return view('cities.index', compact('city_name','cities'));
         }
     }
 }

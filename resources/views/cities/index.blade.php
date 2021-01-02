@@ -1,13 +1,13 @@
 @extends('layouts.layout', ['title' => 'Главная страница'])
 @section('content')
-        @if(empty($city_name))
-            @if(!empty($cities))
+        @if(empty($city_name)) {{-- Не определили город --}}
+            @if(!empty($cities)) {{-- Есть список городов с отзывами для отображения списка --}}
                 <ul class="list-group">
                     @foreach($cities as $city)
                         <li class="list-group-item list-group-item-info"><a href="{{ asset(route('comment.index', ['city_id'=>$city->id, 'city_name'=>$city->name])) }}" class="card-descr">{{ $city->name }}</a></li>
                     @endforeach
                 </ul>
-            @else
+            @else {{-- Нет городов с отзывами --}}
                 <div class="alert alert-danger alert-dismissible show flash" role="alert">
                     Нет городов с отзывами
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -15,7 +15,7 @@
                     </button>
                 </div>
             @endif
-        @else
+        @else {{-- Определили город, вызвали модальное окно, форму с автокомплитом города и списком городов из базы (с отзывами в приоритете и без) рисуем скрытой --}}
             <div class="row city-choosing d-none">
                 <form action="{{ url('/comment') }}" method="get">
                     @csrf
@@ -27,6 +27,11 @@
                         </div>
                     </div>
                 </form>
+                <ul class="list-group">
+                    @foreach($cities as $city)
+                        <li class="list-group-item list-group-item-info d-inline-flex justify-content-between"><a href="{{ asset(route('comment.index', ['city_id'=>$city->id, 'city_name'=>$city->name])) }}" class="card-descr">{{ $city->name }}</a><span>Отзывов: {{ $city->cnt ? $city->cnt : '0' }}</span></li>
+                    @endforeach
+                </ul>
             </div>
         @endif
 @endsection

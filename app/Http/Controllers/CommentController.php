@@ -33,7 +33,6 @@ class CommentController extends Controller
         if (!$request->session()->has('city_chosen')) {
             session(['city_chosen' => $cityName]);
         }
-        //dd('city_id=' . $cityId . ' city_name=' . $cityName);
         if (empty($cityId)) { // Пришли из модального окна только с именем города
             $city = City::getCityByName($cityName);
             if (empty($city)) { // Новый город
@@ -43,14 +42,12 @@ class CommentController extends Controller
             }
             $cityId = $city->id;
         }
-        //dd('city_id=' . $cityId . ' city_name=' . $cityName);
 
         $comments = Comment::getCommentsByCityId($cityId);
         /*JavaScript::put([
             'foo_token' => 'qwerty'
         ]);*/
 
-            //return view('comments.index', compact('comments','cityId','cityName'));
         $title = "Отзывы по городу $cityName";
         return view('comments.index', compact('comments','cityName','title'));
     }
