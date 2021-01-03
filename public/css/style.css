@@ -79,3 +79,14 @@ img {
 .city-multiple {
     cursor: pointer;
 }
+.form-group {
+    text-align: left;
+}
+.form-group label {
+    font-weight: bold;
+
+}
+svg {
+    height: 0;
+    width: 0;
+}

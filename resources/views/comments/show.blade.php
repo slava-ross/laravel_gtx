@@ -19,7 +19,7 @@
                     <div class="card-rating mb-1"><span class="font-weight-bold">Рейтинг:</span> {{ $comment->rating }}</div>
                     <div class="card-date mb-1"><span class="font-weight-bold">Отзыв создан:</span> {{ $comment->created_at->diffForHumans() }}</div>
                     <div class="card-btn">
-                        <a href="{{ route('/') }}" class="btn btn-outline-primary">На главную</a>
+                        <a href="{{ route('/') }}" class="btn btn-outline-primary">Назад</a>
                         @auth
                             @if (Auth::user()->id == $comment->user_id)
 
@@ -33,74 +33,22 @@
                                 </form>
                                 --}}
 
-                                <form action="{{ route('comment.destroy', $comment->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="submit" id="delete-comment" class="btn btn-outline-danger delete-comment" data-id="{{ $comment->id }}" value="Удалить">
-                                </form>
-
-                                    {{--<form action="{{ route('comment.destroy', $comment->id) }}" method="POST">
-
-                                        <a data-toggle="modal" id="smallButton" data-target="#smallModal"
-                                           data-attr="{{ route('comment.show', $comment->id) }}" title="show">
-                                            <i class="fas fa-eye text-success  fa-lg"></i>
-                                        </a>
-
-                                        <a class="text-secondary" data-toggle="modal" id="mediumButton" data-target="#mediumModal"
-                                           data-attr="{{ route('comment.edit', $comment->id) }}">
-                                            <i class="fas fa-edit text-gray-300"></i>
-                                        </a>
+                                {{-- !-- Delete Warning Modal -->
+                                <form action="{{ route('projects.destroy', $project->id) }}" method="post">
+                                    <div class="modal-body">
                                         @csrf
                                         @method('DELETE')
-
-                                        <button type="submit" title="delete" style="border: none; background-color:transparent;">
-                                            <i class="fas fa-trash fa-lg text-danger"></i>
-                                        </button>
-                                    </form>--}}
-
-
-
-
-                                {{--<!-- small modal -->
-                                <div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="smallModalLabel"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog modal-sm" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body" id="smallBody">
-                                                <div>
-                                                    <!-- the result to be displayed apply here -->
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <h5 class="text-center">Are you sure you want to delete {{ $project->name }} ?</h5>
                                     </div>
-                                </div>--}}
-
-                                {{--<!-- medium modal -->
-                                <div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body" id="mediumBody">
-                                                <div>
-                                                    <!-- the result to be displayed apply here -->
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger">Yes, Delete Project</button>
                                     </div>
-                                </div>--}}
+                                </form>
+                                --}}
 
-
-
+                                    @csrf
+                                    <input type="submit" id="delete-comment" class="btn btn-outline-danger delete-comment" data-id="{{ $comment->id }}" value="Удалить">
                             @endif
                         @endauth
                     </div>
@@ -113,12 +61,12 @@
 {{-- Модальное окно информации об авторе --}}
 @section('modal')
     @auth()
-        <div class="modal fade" id="authorModal" tabindex="-1" role="dialog" aria-labelledby="authorModalLabel"
+        <div class="modal fade" id="author-modal" tabindex="-1" role="dialog" aria-labelledby="authorModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <div>Автор: {{ $user->fio }}</div>
+                        <h5 class="modal-title" id="author-modal-label">Автор: {{ $user->fio }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

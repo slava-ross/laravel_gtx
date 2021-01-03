@@ -10,7 +10,7 @@ $(document).ready(function() {
     // Информация об авторе
     $("a.author-info").on('click', function (e) {
         e.preventDefault();
-        $("#authorModal").modal('show');
+        $("#author-modal").modal('show');
     });
 
     // Модальное окно города
@@ -142,7 +142,10 @@ $(document).ready(function() {
         $("#city-select option[value=" + itemCityName + "]").remove();
     });
 
-    /* Удаление отзыва */
+    /*
+     * Удаление отзыва
+     *
+     * /
 
     $('body').on('click', '#delete-comment', function (e) {
         e.preventDefault();
@@ -178,7 +181,59 @@ $(document).ready(function() {
             });
         }
     });
+
+    /*
+     * Создание отзыва
+     *
+     */
+
+    /* Модальное окно создания отзыва */
+    $("a.create-comment").on('click', function (e) {
+        e.preventDefault();
+        $("#create-comment-modal").modal('show');
+    });
+
+    /* Ajax-отправка формы создания отзыва */
+    $('body').on('click', '#new-comment-create', function (e) {
+        e.preventDefault();
+
+
+
+
+
+        let token = $('input[name="_token"]').attr('value');
+        $.ajax({
+            type: 'POST',
+            headers: {'X-CSRF-Token': token},
+            dataType: 'json',
+            url: "/comment/",
+            data: {
+
+                "_token": token
+            },
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            success: function (data) {
+                console.log(data);
+                document.location.href = '/';
+            },
+            complete: function() {
+                $('#loader').hide();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(JSON.stringify(jqXHR));
+                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                console.warn(jqXHR.responseText);
+                $('#loader').hide();
+            },
+            timeout: 8000
+        });
+    });
+
 });
+
+
 
 /*
         // display a modal (small modal)
