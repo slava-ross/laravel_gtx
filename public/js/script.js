@@ -188,9 +188,41 @@ $(document).ready(function() {
      */
 
     /* Модальное окно создания отзыва */
-    $("a.create-comment").on('click', function (e) {
+    $("#create-comment").on('click', function (e) {
         e.preventDefault();
-        $("#create-comment-modal").modal('show');
+        let token = $('input[name="_token"]').attr('value');
+
+        $.ajax({
+            type: 'GET',
+            headers: {'X-CSRF-Token': token},
+            dataType: 'json',
+            url: "/comment/create",
+            data: {
+                "_token": token
+            },
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            success: function (data) {
+                console.log(data);
+                if(data.success == 'true') {
+                    $('#comment-modal-dialog').html(data.html);
+                } else {
+                    $('#comment-modal-dialog').html('ERROR!!!');
+                }
+            },
+            complete: function() {
+                $('#loader').hide();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(JSON.stringify(jqXHR));
+                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                console.warn(jqXHR.responseText);
+                $('#loader').hide();
+            },
+            timeout: 8000
+        });
+        $("#comment-modal-lg").modal('show');
     });
 
     /* Ajax-отправка формы создания отзыва */
@@ -231,7 +263,54 @@ $(document).ready(function() {
         });
     });
 
+    /*
+     * Редактирование отзыва
+     *
+     */
+
+    /* Модальное окно редактирования отзыва */
+    $("#edit-comment").on('click', function (e) {
+        e.preventDefault();
+        let token = $('input[name="_token"]').attr('value');
+        //let comment_id = $(this).data("id");
+        let url = $(this).attr('data-attr');
+        console.log(url);
+        $.ajax({
+            type: 'GET',
+            headers: {'X-CSRF-Token': token},
+            dataType: 'json',
+            url: url,
+            data: {
+                "_token": token
+            },
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            success: function (data) {
+                console.log(data);
+                if(data.success == 'true') {
+                    $('#comment-modal-dialog').html(data.html);
+                } else {
+                    $('#comment-modal-dialog').html('ERROR!!!');
+                }
+            },
+            complete: function() {
+                $('#loader').hide();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(JSON.stringify(jqXHR));
+                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                console.warn(jqXHR.responseText);
+                $('#loader').hide();
+            },
+            timeout: 8000
+        });
+        $("#comment-modal-lg").modal('show');
+    });
+
+
 });
+
 
 
 

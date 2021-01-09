@@ -18,18 +18,18 @@
                 <a class="nav-link" href="/">Главная</a>
             </li>
             <li class="nav-item active offset-3">
-                <a class="nav-link create-comment" href="#">Создать отзыв</a>
+                <a id="create-comment" class="nav-link" href="#">Создать отзыв</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             <!-- Authentication Links -->
             @guest
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">{{ __('Войти') }}</a>
+                    <a class="nav-link" href="{{ route('login') }}">{{ __('auth.login') }}</a>
                 </li>
                 @if (Route::has('register'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">{{ __('Зарегистрироваться') }}</a>
+                        <a class="nav-link" href="{{ route('register') }}">{{ __('auth.register') }}</a>
                     </li>
                 @endif
             @else
@@ -42,7 +42,7 @@
                         <a class="dropdown-item" href="{{ route('logout') }}"
                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                            {{ __('Выход') }}
+                            {{ __('auth.logout') }}
                         </a>
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -64,61 +64,9 @@
 
 {{-- Модальное окно создания и редактирования отзывов --}}
 
-<!-- button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button -->
+<div class="modal fade" id="comment-modal-lg" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+    <div id="comment-modal-dialog" class="modal-dialog modal-lg" role="document">
 
-<div class="modal fade" id="create-comment-modal" tabindex="-1" role="dialog" aria-labelledby="createCommentModalLabel" aria-hidden="true">
-
-    <div class="modal-dialog modal-lg" role="document">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title" id="create-comment-modal-label">Новый отзыв</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body" id="create-comment-modal-body">
-
-                <form id="comment-form" name="comment-form" class="form-horizontal">
-
-                {{-- Заголовок отзыва --}}
-                <div class="form-group">
-                    <label for="title">Заголовок:</label>
-                    <input name="title" id="title" type="text" class="form-control" required">
-                </div>
-                {{-- Текст отзыва --}}
-                <div class="form-group">
-                    <label for="comment_text">Текст отзыва:</label>
-                    <textarea name="comment_text" id="comment_text" rows="10" class="form-control" required></textarea>
-                </div>
-                {{-- Города/города отзыва --}}
-                <div class="form-group city-holder">
-                    <ul id="city-shell" class="city-shell"></ul>
-                </div>
-                <div class="form-group">
-                    <label for="cities-data">Выберите один или несколько городов (Нет выбора - все города):</label>
-                    <input id="cities-data" class="city-multiple form-control" type="search" placeholder="Начните писать ваш город ...">
-                    <select id="city-select" class="city-select" name="cities[]" multiple hidden>
-                    </select>
-                </div>
-                {{-- Рейтинг --}}
-                <div class="form-group">
-                    <label for="rating">Рейтинг (1-5):</label>
-                    <input name="rating" id="rating" type="number" min="1" max="5" class="form-control" required">
-                </div>
-                {{-- Изображение --}}
-                <div class="form-group">
-                    <label for="image">Прикрепите изображение (по желанию):</label><br>
-                    <input name="img" id="image" type="file">
-                </div>
-            </div>
-            <div class="modal-footer">
-                @csrf
-                <button type="button" id="new-comment-create" class="btn btn-outline-success">Создать отзыв</button>
-            </div>
-        </div>
     </div>
 </div>
 

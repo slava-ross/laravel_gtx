@@ -59,9 +59,13 @@ class CommentController extends Controller
      */
     public function create()
     {
-        $cities = City::all('id', 'name');
         $new_comment = true;
-        return view('comments.create', compact('cities', 'new_comment'));
+        $modal_title = 'Новый отзыв';
+        $button_id = 'new-comment-create';
+        $button_text = 'Создать отзыв';
+
+        $viewHTML = view('comments.create', compact('new_comment', 'modal_title','button_id','button_text'))->render();
+        return \Response::json(['success' => 'true', 'html' => $viewHTML]);
     }
 
     /**
@@ -128,16 +132,22 @@ class CommentController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function edit($id)
     {
         $comment = Comment::find($id);
         if ($comment->user_id != \Auth::user()->id) {
             return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
+            //return \Response::json(['error' => 'Вы не можете удалить данный отзыв!'], 403);
         }
         $new_comment = false;
-        return view('comments.edit', compact('comment','new_comment'));
+        $modal_title = "Редактирование отзыва №$comment->id";
+        $button_id = 'comment-edit';
+        $button_text = 'Сохранить отзыв';
+
+        $viewHTML = view('comments.edit', compact('comment','new_comment','modal_title','button_id','button_text'))->render();
+        return \Response::json(['success' => 'true', 'html' => $viewHTML]);
     }
 
     /**

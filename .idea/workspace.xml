@@ -4,12 +4,13 @@
     <list default="true" id="638d241f-8ad2-40ae-9e7e-5eb6e0465856" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CommentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CommentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/lang/ru/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/lang/ru/auth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/lang/ru/passwords.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/lang/ru/passwords.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/comments/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/comments/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/comments/edit.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/comments/edit.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/comments/parts/form.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/comments/parts/form.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/comments/show.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/comments/show.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/errors/404.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/errors/404.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/layout.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/layout.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -224,7 +225,7 @@
       <workItem from="1610200837707" duration="128000" />
       <workItem from="1610200978638" duration="50000" />
       <workItem from="1610201082308" duration="1982000" />
-      <workItem from="1610218184211" duration="4178000" />
+      <workItem from="1610218184211" duration="13999000" />
     </task>
     <servers />
   </component>

@@ -23,7 +23,7 @@
                         @auth
                             @if (Auth::user()->id == $comment->user_id)
 
-                                <a id="edit-comment" data-attr="{{ route('comment.edit', ['comment'=>$comment->id]) }}" title="show" class="btn btn-outline-success">Редактировать</a>
+                                <a id="edit-comment" data-attr="{{ route('comment.edit', ['comment'=>$comment->id]) }}" class="btn btn-outline-success">Редактировать</a>
                                 @csrf
                                 <input type="submit" id="delete-comment" class="btn btn-outline-danger delete-comment" data-id="{{ $comment->id }}" value="Удалить">
 
