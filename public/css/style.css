@@ -49,6 +49,7 @@ img {
 
 .city-shell {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-items: flex-start;
     padding: 0;

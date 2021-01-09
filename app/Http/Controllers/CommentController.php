@@ -70,7 +70,7 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CommentRequest $request)
     {
         $cities = $request->cities;
         $comment = new Comment;
@@ -197,12 +197,9 @@ class CommentController extends Controller
      */
     public function getAuthorsComments($id)
     {
-//        if (\Auth::check()) {
             $comments = Comment::getCommentsByAuthor($id);
             $fio = $comments->first()->fio;
             $title = "Отзывы автора $fio";
             return view('comments.index', compact('comments', 'fio', 'title'));
-//        }
-//        return redirect()->route('/')->withErrors('Вы не можете просматривать отзывы определённого автора');
     }
 }

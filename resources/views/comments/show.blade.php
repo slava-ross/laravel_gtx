@@ -23,7 +23,9 @@
                         @auth
                             @if (Auth::user()->id == $comment->user_id)
 
-                                <a href="{{ route('comment.edit', ['comment'=>$comment->id]) }}" class="btn btn-outline-success">Редактировать</a>
+                                <a id="edit-comment" data-attr="{{ route('comment.edit', ['comment'=>$comment->id]) }}" title="show" class="btn btn-outline-success">Редактировать</a>
+                                @csrf
+                                <input type="submit" id="delete-comment" class="btn btn-outline-danger delete-comment" data-id="{{ $comment->id }}" value="Удалить">
 
                                 {{-- Без Ajax --
                                 <form action="{{ route('comment.destroy', ['comment'=>$comment->id]) }}" method="POST" onsubmit="if (confirm('Точно удалить отзыв?')) { return true } else { return false }">
@@ -46,9 +48,6 @@
                                     </div>
                                 </form>
                                 --}}
-
-                                    @csrf
-                                    <input type="submit" id="delete-comment" class="btn btn-outline-danger delete-comment" data-id="{{ $comment->id }}" value="Удалить">
                             @endif
                         @endauth
                     </div>

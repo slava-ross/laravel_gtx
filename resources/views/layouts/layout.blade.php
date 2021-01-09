@@ -62,20 +62,27 @@
 
 @yield('modal')
 
-{{-- Модальное окно создания нового отзыва --}}
+{{-- Модальное окно создания и редактирования отзывов --}}
 
 <!-- button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button -->
 
 <div class="modal fade" id="create-comment-modal" tabindex="-1" role="dialog" aria-labelledby="createCommentModalLabel" aria-hidden="true">
+
     <div class="modal-dialog modal-lg" role="document">
+
         <div class="modal-content">
+
             <div class="modal-header">
                 <h5 class="modal-title" id="create-comment-modal-label">Новый отзыв</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
             <div class="modal-body" id="create-comment-modal-body">
+
+                <form id="comment-form" name="comment-form" class="form-horizontal">
+
                 {{-- Заголовок отзыва --}}
                 <div class="form-group">
                     <label for="title">Заголовок:</label>

@@ -145,7 +145,7 @@ $(document).ready(function() {
     /*
      * Удаление отзыва
      *
-     * /
+     */
 
     $('body').on('click', '#delete-comment', function (e) {
         e.preventDefault();
@@ -236,32 +236,6 @@ $(document).ready(function() {
 
 
 /*
-        // display a modal (small modal)
-        $(document).on('click', '#smallButton', function(event) {
-        event.preventDefault();
-        let href = $(this).attr('data-attr');
-        $.ajax({
-        url: href,
-        beforeSend: function() {
-        $('#loader').show();
-    },
-        // return the result
-        success: function(result) {
-        $('#smallModal').modal("show");
-        $('#smallBody').html(result).show();
-    },
-        complete: function() {
-        $('#loader').hide();
-    },
-        error: function(jqXHR, testStatus, error) {
-        console.log(error);
-        alert("Page " + href + " cannot open. Error:" + error);
-        $('#loader').hide();
-    },
-        timeout: 8000
-    })
-    });
-
         // display a modal (medium modal)
         $(document).on('click', '#mediumButton', function(event) {
         event.preventDefault();
@@ -337,45 +311,8 @@ $(document).ready(function(){
 		});
 	});
 
-	$('.editing').on('click', function() {
-		var item_id = $(this).attr("attr-id");
 
-		var item_name = $( '#id-' + item_id + ' > h3').text();
-		var item_descr = $( '#id-' + item_id + ' p.item_descr').text();
-		var item_author = $( '#id-' + item_id + ' p.item_author').text();
 
-		$('.modal input[name = "item_name"]').val( item_name );
-		$('.modal textarea[name = "item_descr"]').text( item_descr );
-		$('.modal input[name = "item_author"]').val( item_author );
-		$('.modal').attr( "attr_id", item_id );
-
-		$('.modal').show("fast", function(){});
-	});
-
-	$('.modal input[name = "submit"]').on('click', function() {
-		var modalObj = $(this).parent().parent();
-
-		var item_id = modalObj.attr( 'attr_id' );
-		var new_item_name = modalObj.find( 'input[name = "item_name"]' ).val();
-		var new_item_descr = modalObj.find( 'textarea[name = "item_descr"]' ).val();
-		var new_item_author = modalObj.find( 'input[name = "item_author"]' ).val();
-
-		//alert( item_id + ' : ' + new_item_name + ' : ' + new_item_descr + ' : ' + new_item_author);
-
-		$.ajax({
-			dataType: 'json',
-			url: 'ajax.php?action=edit&item_id=' + item_id + '&item_name=' + new_item_name + '&item_descr=' + new_item_descr + '&item_author=' + new_item_author,
-			success: function( cont ) {
-				if ( cont == 'edited' ) {
-					modalObj.hide("fast", function(){});
-					$( '#id-' + item_id + ' > h3').text( new_item_name );
-					$( '#id-' + item_id + ' p.item_descr').text( new_item_descr );
-					$( '#id-' + item_id + ' p.item_author').text( new_item_author );
-				}
-				else {
-					alert( cont );
-				}
-			}
 		});
 	});
 });

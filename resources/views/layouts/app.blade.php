@@ -79,9 +79,6 @@
             @yield('content')
         </div>
 
-        <!--main class="py-4">
-            {{--@yield('content')--}}
-        </main-->
     </div>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/app_script.js') }}"></script>
