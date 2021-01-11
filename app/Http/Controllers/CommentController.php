@@ -6,13 +6,8 @@ use App\Http\Requests\CommentRequest;
 use Illuminate\Http\Request;
 use App\Comment;
 use App\City;
-use App\User;
 use Illuminate\Support\Facades\Storage;
-use function GuzzleHttp\Promise\all;
-use JavaScript;
-
-//use Illuminate\Support\Str;
-//use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -59,13 +54,16 @@ class CommentController extends Controller
      */
     public function create()
     {
-        $new_comment = true;
-        $modal_title = 'Новый отзыв';
-        $button_id = 'new-comment-create';
-        $button_text = 'Создать отзыв';
+        if (Auth::check()) {
+            $new_comment = true;
+            $modal_title = 'Новый отзыв';
+            $button_id = 'new-comment-create';
+            $button_text = 'Создать отзыв';
 
-        $viewHTML = view('comments.create', compact('new_comment', 'modal_title','button_id','button_text'))->render();
-        return \Response::json(['success' => 'true', 'html' => $viewHTML]);
+            $viewHTML = view('comments.create', compact('new_comment', 'modal_title','button_id','button_text'))->render();
+            return \Response::json(['success' => 'true', 'html' => $viewHTML]);
+        }
+        return \Response::json(['error' => 'Вы не можете удалить данный отзыв!'], 401);
     }
 
     /**
@@ -109,7 +107,7 @@ class CommentController extends Controller
             $city = City::find($city_id);
             $city->comments()->save($comment);
         }
-        return redirect()->route('/')->with('success', 'Отзыв успешно создан!');
+        return \Response::json(['success' => 'Отзыв успешно создан!']);
     }
 
     /**
@@ -138,8 +136,8 @@ class CommentController extends Controller
     {
         $comment = Comment::find($id);
         if ($comment->user_id != \Auth::user()->id) {
-            return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
-            //return \Response::json(['error' => 'Вы не можете удалить данный отзыв!'], 403);
+            //return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
+            return \Response::json(['error' => 'Вы не можете удалить данный отзыв!'], 403);
         }
         $new_comment = false;
         $modal_title = "Редактирование отзыва №$comment->id";
@@ -160,25 +158,23 @@ class CommentController extends Controller
     public function update(CommentRequest $request, $id)
     {
         $comment = Comment::find($id);
+        dd($comment);
         if ($comment->user_id != \Auth::user()->id) {
             return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
         }
+        dd($request);
         $comment->fill($request->all());
-        if ($request->file('img')) {
-            $path = Storage::putFile('public', $request->file('img'));
-            $url = Storage::url($path);
-            $comment->img = $url;
-        }
-        else {
-            $comment->img = null;
+        if ($request->img-leave !== 'on') {
+            if ($request->file('img')) {
+                $path = Storage::putFile('public', $request->file('img'));
+                $url = Storage::url($path);
+                $comment->img = $url;
+            }
+            else {
+                $comment->img = null;
+            }
         }
         $comment->update();
-
-        /* thinking about
-        $comment->fill($request->except('bla-bla-bla'));
-        $comment->save();
-        $comment->city()->sync($request->city);
-        */
 
         return redirect()->route('comment.show', ['comment' => $comment->id])->with('success', 'Отзыв успешно отредактирован!');
     }

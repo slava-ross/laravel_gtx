@@ -5,7 +5,7 @@ $(document).ready(function() {
         $(".flash").fadeTo(500, 0).slideUp(500, function () {
             $(this).remove();
         });
-    }, 5000);
+    }, 10000);
 
     // Информация об авторе
     $("a.author-info").on('click', function (e) {
@@ -27,7 +27,7 @@ $(document).ready(function() {
     });
 
     // flash-message elements creating
-    function createErrorFlash(message, flashType) {
+    function createFlash(message, flashType) {
         let alertElement = document.createElement('div');
         alertElement.className = 'alert alert-' + flashType + ' alert-dismissible fade show flash';
         alertElement.setAttribute('role', 'alert');
@@ -49,8 +49,8 @@ $(document).ready(function() {
         return alertElement;
     }
 
-    //const errorFlash = createErrorFlash('Это ошибка!', 'danger');
-    //const successFlash = createErrorFlash('Это успешное сообщение!', 'success');
+    //const errorFlash = createFlash('Это ошибка!', 'danger');
+    //const successFlash = createFlash('Это успешное сообщение!', 'success');
 
     //$('.container-main').prepend(errorFlash);
     //$('.container').prepend(successFlash);
@@ -66,6 +66,7 @@ $(document).ready(function() {
     function formatSelected(suggestion) {
         return suggestion.data.city;
     }
+
     $(".city").suggestions({
         token: token,
         type: "ADDRESS",
@@ -79,62 +80,66 @@ $(document).ready(function() {
         onSelect: function (suggestion) {
         }
     });
-    // end dadata
 
-    $('.city-multiple').suggestions({
-        token: token,
-        type: "ADDRESS",
-        hint: false,
-        bounds: "city",
-        constraints: {
-            locations: {city_type_full: "город"}
-        },
-        formatResult: formatResult,
-        formatSelected: formatSelected,
-        onSelect: function (suggestion) {
-            cityName = suggestion.data.city;
-            let deleteFlag = false;
+    $('body').on('focus', '#cities-data', function () {
+        $(this).suggestions = $('body').suggestions;
+        $(this).suggestions({
+            token: token,
+            type: "ADDRESS",
+            hint: false,
+            bounds: "city",
+            constraints: {
+                locations: {city_type_full: "город"}
+            },
+            formatResult: formatResult,
+            formatSelected: formatSelected,
+            onSelect: function (suggestion) {
+                cityName = suggestion.data.city;
+                let deleteFlag = false;
 
-            // Удаление существующего города из списка и скрытого селекта
-            $("#city-select option").each(function () {
-                if (cityName == $(this).val()) {
-                    $(this).remove();
-                    deleteFlag = true;
-                }
-            });
-            if (deleteFlag) {
-                $("#city-shell li").each(function () {
-                    if (cityName == $(this).text().slice(1)) {
+                // Удаление существующего города из списка и скрытого селекта
+                $("#city-select option").each(function () {
+                    if (cityName == $(this).val()) {
                         $(this).remove();
+                        deleteFlag = true;
                     }
                 });
-            } else {
-                // Добавление города в список выбранных
-                let cityShell = document.getElementById('city-shell');
-                let newLi = document.createElement('li');
-                newLi.className = 'city-item__choice';
-                let newSpan = document.createElement('span');
-                newSpan.className = 'city-item__remove';
-                newSpan.innerText = "×";
-                newLi.appendChild(newSpan);
-                newLi.append(cityName);
-                cityShell.append(newLi);
+                if (deleteFlag) {
+                    $("#city-shell li").each(function () {
+                        if (cityName == $(this).text().slice(1)) {
+                            $(this).remove();
+                        }
+                    });
+                } else {
+                    // Добавление города в список выбранных
+                    let cityShell = document.getElementById('city-shell');
+                    let newLi = document.createElement('li');
+                    newLi.className = 'city-item__choice';
+                    let newSpan = document.createElement('span');
+                    newSpan.className = 'city-item__remove';
+                    newSpan.innerText = "×";
+                    newLi.appendChild(newSpan);
+                    newLi.append(cityName);
+                    cityShell.append(newLi);
 
-                // Добавление города в скрытый select
-                let citySelect = document.getElementById('city-select');
-                let newOption = document.createElement('option');
-                newOption.value = cityName;
-                newOption.innerText = cityName;
-                newOption.selected = true;
-                citySelect.appendChild(newOption);
+                    // Добавление города в скрытый select
+                    let citySelect = document.getElementById('city-select');
+                    let newOption = document.createElement('option');
+                    newOption.value = cityName;
+                    newOption.innerText = cityName;
+                    newOption.selected = true;
+                    citySelect.appendChild(newOption);
+                }
+                // Очистка поля ввода города
+                let citiesData = document.getElementById('cities-data');
+                citiesData.value = '';
             }
-            // Очистка поля ввода города
-            let citiesData = document.getElementById('cities-data');
-            citiesData.value = '';
-        }
+        })
     });
 
-    $('#city-shell').on('click', '.city-item__remove', function () {
+    // end dadata
+
+    $('body').on('click', '.city-item__remove', function () {
         let liCityItem = $(this).parent();
         $(this).remove();
         let itemCityName = liCityItem.text();
@@ -188,10 +193,10 @@ $(document).ready(function() {
      */
 
     /* Модальное окно создания отзыва */
+
     $("#create-comment").on('click', function (e) {
         e.preventDefault();
         let token = $('input[name="_token"]').attr('value');
-
         $.ajax({
             type: 'GET',
             headers: {'X-CSRF-Token': token},
@@ -204,60 +209,83 @@ $(document).ready(function() {
                 $('#loader').show();
             },
             success: function (data) {
-                console.log(data);
                 if(data.success == 'true') {
                     $('#comment-modal-dialog').html(data.html);
+                    $("#comment-modal-lg").modal('show');
                 } else {
-                    $('#comment-modal-dialog').html('ERROR!!!');
+                    alert('Error data!!!');
                 }
             },
             complete: function() {
                 $('#loader').hide();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(JSON.stringify(jqXHR));
-                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                console.warn(jqXHR.responseText);
                 $('#loader').hide();
+                //console.log(JSON.stringify(jqXHR));
+                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                //console.warn(jqXHR.responseText);
             },
             timeout: 8000
         });
-        $("#comment-modal-lg").modal('show');
     });
 
+    // Сброс формы - функция?
+
     /* Ajax-отправка формы создания отзыва */
-    $('body').on('click', '#new-comment-create', function (e) {
+
+    $('body').on('submit', '#create-comment-form', function (e) {
         e.preventDefault();
+        const token = $('input[name="_token"]').attr('value');
+        const url = $(this).attr('data-attr');
+        let formData = new FormData($(this)[0]);
 
+        /*
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+        }
+        alert();
+        }*/
 
-
-
-
-        let token = $('input[name="_token"]').attr('value');
         $.ajax({
+            url: url,
             type: 'POST',
-            headers: {'X-CSRF-Token': token},
             dataType: 'json',
-            url: "/comment/",
-            data: {
-
-                "_token": token
+            headers: {
+                'X-CSRF-Token': token
             },
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
             beforeSend: function() {
                 $('#loader').show();
             },
             success: function (data) {
-                console.log(data);
-                document.location.href = '/';
+                $("#comment-modal-lg").modal('hide');
+                //const errorFlash = createFlash('Это ошибка!', 'danger');
+                //const successFlash = createFlash('Это успешное сообщение!', 'success');
+
+                //$('.container-main').prepend(errorFlash);
+                //$('.container').prepend(successFlash);
+                let message = data.success;
+                if(message) {
+                    let successFlash = createFlash(message, 'success');
+                    console.log(successFlash);
+                    $('.container-main').prepend(successFlash);
+                } else {
+                    alert('Error data!!!');
+                }
+                //console.log(data);
+                //document.location.href = '/';
             },
             complete: function() {
                 $('#loader').hide();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(JSON.stringify(jqXHR));
+                $('#loader').hide();
+                //console.log(JSON.stringify(jqXHR));
                 console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
                 console.warn(jqXHR.responseText);
-                $('#loader').hide();
             },
             timeout: 8000
         });
@@ -269,15 +297,17 @@ $(document).ready(function() {
      */
 
     /* Модальное окно редактирования отзыва */
+
     $("#edit-comment").on('click', function (e) {
         e.preventDefault();
         let token = $('input[name="_token"]').attr('value');
         //let comment_id = $(this).data("id");
         let url = $(this).attr('data-attr');
-        console.log(url);
         $.ajax({
             type: 'GET',
-            headers: {'X-CSRF-Token': token},
+            headers: {
+                'X-CSRF-Token': token
+            },
             dataType: 'json',
             url: url,
             data: {
@@ -287,141 +317,91 @@ $(document).ready(function() {
                 $('#loader').show();
             },
             success: function (data) {
-                console.log(data);
+                //console.log(data);
                 if(data.success == 'true') {
                     $('#comment-modal-dialog').html(data.html);
                 } else {
                     $('#comment-modal-dialog').html('ERROR!!!');
                 }
+                $("#comment-modal-lg").modal('show');
             },
             complete: function() {
                 $('#loader').hide();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(JSON.stringify(jqXHR));
-                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                console.warn(jqXHR.responseText);
                 $('#loader').hide();
+                //console.log(JSON.stringify(jqXHR));
+                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                //console.warn(jqXHR.responseText);
             },
             timeout: 8000
         });
-        $("#comment-modal-lg").modal('show');
     });
 
+    /* Ajax-отправка формы редактирования отзыва */
 
-});
+    $('body').on('submit', '#edit-comment-form', function (e) {
+        e.preventDefault();
+        const url = $(this).attr('data-attr');
+        const token = $('input[name="_token"]').attr('value');
+        const method = $('input[name="_method"]').attr('value');
+        let formData = new FormData($(this)[0]);
 
 
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+        }
+        alert();
 
-
-/*
-        // display a modal (medium modal)
-        $(document).on('click', '#mediumButton', function(event) {
-        event.preventDefault();
-        let href = $(this).attr('data-attr');
         $.ajax({
-        url: href,
-        beforeSend: function() {
-        $('#loader').show();
-    },
-        // return the result
-        success: function(result) {
-        $('#mediumModal').modal("show");
-        $('#mediumBody').html(result).show();
-    },
-        complete: function() {
-        $('#loader').hide();
-    },
-        error: function(jqXHR, testStatus, error) {
-        console.log(error);
-        alert("Page " + href + " cannot open. Error:" + error);
-        $('#loader').hide();
-    },
-        timeout: 8000
-    })
-    });
-*/
+            url: url,
+            type: method,
+            dataType: 'json',
+            headers: {
+                'X-CSRF-Token': token
+            },
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            success: function (data) {
+                $("#comment-modal-lg").modal('hide');
+                let message = data.success;
 
-    /*
-             document.getElementById('submit').onclick = function() {
-              var selected = [];
-              for (var option of document.getElementById('pets').options) {
-                if (option.selected) {
-                  selected.push(option.value);
+                if(message) {
+                    let successFlash = createFlash(message, 'success');
+                    console.log(successFlash);
+                    $('.container-main').prepend(successFlash);
+                } else {
+                    alert('Error data!!!');
                 }
-              }
-              alert(selected);
-            }
 
-            document.getElementById('submit').onclick = function() {
-              var select = document.getElementById('pets');
-              var selected = [...select.options]
-                                .filter(option => option.selected)
-                                .map(option => option.value);
-              alert(selected);
-            }
-
-            document.getElementById('submit').onclick = function() {
-              var select = document.getElementById('pets');
-              var selected = [...select.selectedOptions]
-                                .map(option => option.value);
-              alert(selected);
-            }
-     */
-
-
-
-/*
-$(document).ready(function(){
-
-	$('.deleting').on('click', function() {
-		var clickedElement = $(this);
-		$.ajax({
-			dataType: 'json',
-			url: 'ajax.php?action=del&item_id=' + $(this).attr("attr-id"),
-	7		success: function( cont ) {
-				if ( cont == 'deleted' ) {
-					clickedElement.parent().parent().hide("fast", function(){});
-				}
-				else{
-					alert( cont );
-				}
-			}
-		});
-	});
-
-
-
-		});
-	});
-});
-
-     */
-
-    /*
-     $(document).on('click', '#mediumButton', function(event) {
-            event.preventDefault();
-            let href = $(this).attr('data-attr');
-            $.ajax({
-                url: href,
-                beforeSend: function() {
-                    $('#loader').show();
-                },
-                // return the result
-                success: function(result) {
-                    $('#mediumModal').modal("show");
-                    $('#mediumBody').html(result).show();
-                },
-                complete: function() {
-                    $('#loader').hide();
-                },
-                error: function(jqXHR, testStatus, error) {
-                    console.log(error);
-                    alert("Page " + href + " cannot open. Error:" + error);
-                    $('#loader').hide();
-                },
-                timeout: 8000
-            })
+                //document.location.href = '/comment/';
+            },
+            complete: function() {
+                $('#loader').hide();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#loader').hide();
+                //console.log(JSON.stringify(jqXHR));
+                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                //console.warn(jqXHR.responseText);
+            },
+            timeout: 8000
         });
+    });
 
-     */
+    $('body').on('change', '#img-checkbox', function () {
+        const imageInput = $('#img-input');
+        if(this.checked){
+            imageInput.addClass('d-none');
+        }
+        else {
+            imageInput.removeClass('d-none');
+        }
+    });
+
+});

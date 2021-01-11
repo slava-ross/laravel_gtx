@@ -46,7 +46,6 @@ img {
 .author-info {
     padding: 0;
 }
-
 .city-shell {
     display: flex;
     flex-wrap: wrap;
@@ -85,7 +84,12 @@ img {
 }
 .form-group label {
     font-weight: bold;
-
+}
+input:invalid, textarea:invalid {
+    border-color: red;
+}
+input:valid, textarea:valid {
+    border-color: green;
 }
 svg {
     height: 0;
