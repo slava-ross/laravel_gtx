@@ -158,13 +158,27 @@ class CommentController extends Controller
     public function update(CommentRequest $request, $id)
     {
         $comment = Comment::find($id);
-        dd($comment);
         if ($comment->user_id != \Auth::user()->id) {
-            return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
+            return \Response::json(['error' => 'Вы не можете редактировать данный отзыв!'], 403);
+            //return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
         }
-        dd($request);
+
+        /*if ($validator->fails()) {
+            if($request->ajax())
+            {
+                return response()->json(array(
+                    'success' => false,
+                    'message' => 'There are incorect values in the form!',
+                    'errors' => $validator->getMessageBag()->toArray()
+                ), 422);
+            }
+            $this->throwValidationException(
+                $request, $validator
+            );
+        }*/
+
         $comment->fill($request->all());
-        if ($request->img-leave !== 'on') {
+        if (empty($request->img_leave)) {
             if ($request->file('img')) {
                 $path = Storage::putFile('public', $request->file('img'));
                 $url = Storage::url($path);
@@ -175,8 +189,9 @@ class CommentController extends Controller
             }
         }
         $comment->update();
-
-        return redirect()->route('comment.show', ['comment' => $comment->id])->with('success', 'Отзыв успешно отредактирован!');
+        //return \Response::json(['title' => $request->title, 'comment_text' => $request->comment_text, 'rating' => $request->rating, 'leave' => $request->img_leave, 'img' => $request->img]);
+        return \Response::json(['success' => 'Отзыв успешно изменён!']);
+        //return redirect()->route('comment.show', ['comment' => $comment->id])->with('success', 'Отзыв успешно отредактирован!');
     }
     /**
      * Remove the specified resource from storage.

@@ -65,9 +65,14 @@
 {{-- Модальное окно создания и редактирования отзывов --}}
 
 <div class="modal fade" id="comment-modal-lg" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
-    <div id="comment-modal-dialog" class="modal-dialog modal-lg" role="document">
+    <div id="comment-modal-dialog" class="modal-dialog modal-lg" role="document"></div>
+</div>
 
-    </div>
+{{-- Прелоадер --}}
+
+<div id="loader" class="overlay-loader">
+    <div class="loader-background"></div>
+    <img class="loader-icon spinning-cog" src="{{ asset('images/cog03.svg') }}">
 </div>
 
 <script src="{{ asset('js/app.js') }}"></script>

@@ -55,7 +55,29 @@ $(document).ready(function() {
     //$('.container-main').prepend(errorFlash);
     //$('.container').prepend(successFlash);
 
-    // dadata - подсказка города
+    /*
+     * Прелоадер - AJAX-методы
+     *
+     */
+    function loaderOn() {
+        $('.loader-icon').removeClass('shrinking-cog').addClass('spinning-cog');
+        $('#loader').show();
+    }
+    function loaderOff() {
+        setTimeout(() => {
+        $('.loader-icon').removeClass('spinning-cog').addClass('shrinking-cog');
+        setTimeout(() => {
+                $('#loader').hide();
+            },300
+        );
+            },200
+        );
+    }
+
+    /*
+     * DADATA - подсказка города
+     *
+     */
     var token = '06437c5f9078834928053139b09331cd4c2a17d8';
     var defaultFormatResult = $.Suggestions.prototype.formatResult;
     function formatResult(value, currentValue, suggestion, options) {
@@ -166,21 +188,17 @@ $(document).ready(function() {
                     "id": comment_id,
                     "_token": token
                 },
-                beforeSend: function() {
-                    $('#loader').show();
-                },
+                beforeSend: loaderOn(),
                 success: function (data) {
                     console.log(data);
                     document.location.href = '/';
                 },
-                complete: function() {
-                    $('#loader').hide();
-                },
+                complete: loaderOff(),
                 error: function (jqXHR, textStatus, errorThrown) {
+                    loaderOff();
                     console.log(JSON.stringify(jqXHR));
                     console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
                     console.warn(jqXHR.responseText);
-                    $('#loader').hide();
                 },
                 timeout: 8000
             });
@@ -205,9 +223,7 @@ $(document).ready(function() {
             data: {
                 "_token": token
             },
-            beforeSend: function() {
-                $('#loader').show();
-            },
+            beforeSend: loaderOn(),
             success: function (data) {
                 if(data.success == 'true') {
                     $('#comment-modal-dialog').html(data.html);
@@ -216,11 +232,9 @@ $(document).ready(function() {
                     alert('Error data!!!');
                 }
             },
-            complete: function() {
-                $('#loader').hide();
-            },
+            complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#loader').hide();
+                loaderOff();
                 //console.log(JSON.stringify(jqXHR));
                 console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
                 //console.warn(jqXHR.responseText);
@@ -257,9 +271,7 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             data: formData,
-            beforeSend: function() {
-                $('#loader').show();
-            },
+            beforeSend: loaderOn(),
             success: function (data) {
                 $("#comment-modal-lg").modal('hide');
                 //const errorFlash = createFlash('Это ошибка!', 'danger');
@@ -278,11 +290,9 @@ $(document).ready(function() {
                 //console.log(data);
                 //document.location.href = '/';
             },
-            complete: function() {
-                $('#loader').hide();
-            },
+            complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#loader').hide();
+                loaderOff();
                 //console.log(JSON.stringify(jqXHR));
                 console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
                 console.warn(jqXHR.responseText);
@@ -313,9 +323,7 @@ $(document).ready(function() {
             data: {
                 "_token": token
             },
-            beforeSend: function() {
-                $('#loader').show();
-            },
+            beforeSend: loaderOn(),
             success: function (data) {
                 //console.log(data);
                 if(data.success == 'true') {
@@ -325,11 +333,9 @@ $(document).ready(function() {
                 }
                 $("#comment-modal-lg").modal('show');
             },
-            complete: function() {
-                $('#loader').hide();
-            },
+            complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#loader').hide();
+                loaderOff();
                 //console.log(JSON.stringify(jqXHR));
                 console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
                 //console.warn(jqXHR.responseText);
@@ -343,19 +349,17 @@ $(document).ready(function() {
     $('body').on('submit', '#edit-comment-form', function (e) {
         e.preventDefault();
         const url = $(this).attr('data-attr');
+        console.log(url);
         const token = $('input[name="_token"]').attr('value');
-        const method = $('input[name="_method"]').attr('value');
         let formData = new FormData($(this)[0]);
-
-
+/*
         for (var pair of formData.entries()) {
             console.log(pair[0]+ ', ' + pair[1]);
         }
-        alert();
-
+*/
         $.ajax({
             url: url,
-            type: method,
+            type: 'POST',
             dataType: 'json',
             headers: {
                 'X-CSRF-Token': token
@@ -364,36 +368,34 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             data: formData,
-            beforeSend: function() {
-                $('#loader').show();
-            },
+            beforeSend: loaderOn(),
             success: function (data) {
                 $("#comment-modal-lg").modal('hide');
+                console.log(data);
                 let message = data.success;
-
                 if(message) {
                     let successFlash = createFlash(message, 'success');
-                    console.log(successFlash);
                     $('.container-main').prepend(successFlash);
                 } else {
                     alert('Error data!!!');
                 }
-
                 //document.location.href = '/comment/';
             },
-            complete: function() {
-                $('#loader').hide();
-            },
+            complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#loader').hide();
-                //console.log(JSON.stringify(jqXHR));
+                loaderOff();
+                console.log(JSON.stringify(jqXHR));
                 console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                //console.warn(jqXHR.responseText);
+                console.warn(jqXHR.responseText);
             },
             timeout: 8000
         });
     });
 
+    /*
+     * Отображение/сокрытие диалога загрузки файла изображения к отзыву
+     *
+     */
     $('body').on('change', '#img-checkbox', function () {
         const imageInput = $('#img-input');
         if(this.checked){

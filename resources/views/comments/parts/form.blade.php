@@ -36,8 +36,8 @@
         {{-- Изображение --}}
         @if(!$new_comment)
         <div class="form-group">
-            <input type="checkbox" id="img-checkbox" name="img-leave" checked>
-            <label for="img-leave"> оставить изображение без изменения</label>
+            <input type="checkbox" id="img-checkbox" name="img_leave" checked>
+            <label for="img-checkbox"> оставить изображение без изменения</label>
         </div>
         @endif
         <div id="img-input" class="form-group {{ $new_comment ? '' : 'd-none' }}">
