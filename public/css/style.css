@@ -115,7 +115,7 @@ svg {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(44, 71, 98, 0.7);
+    background-color: rgba(44, 71, 98, 0.8);
 }
 .overlay-loader .loader-icon {
     position: absolute;

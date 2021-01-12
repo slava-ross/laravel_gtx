@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -44,12 +47,39 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Throwable  $exception
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return JsonResponse
      *
      * @throws \Throwable
      */
     public function render($request, Throwable $exception)
     {
+        /*if ($validator->fails()) {
+           if($request->ajax())
+           {
+               return response()->json(array(
+                   'success' => false,
+                   'message' => 'There are incorect values in the form!',
+                   'errors' => $validator->getMessageBag()->toArray()
+               ), 422);
+           }
+           $this->throwValidationException(
+               $request, $validator
+           );
+       }
+       */
+        if(($request->ajax() && !$request->pjax()) || $request->wantsJson()) {
+            if($exception instanceof ValidationException) {
+                return new JsonResponse([
+                    'success' => false,
+                    'errors' => Arr::collapse($exception->errors()),
+                    'message' => $exception->getMessage()
+                ], 422);
+            }
+            return new JsonResponse([
+                'success' => false,
+                'message' => $exception->getMessage()
+            ], 422);
+        }
         return parent::render($request, $exception);
     }
 }

@@ -163,20 +163,6 @@ class CommentController extends Controller
             //return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
         }
 
-        /*if ($validator->fails()) {
-            if($request->ajax())
-            {
-                return response()->json(array(
-                    'success' => false,
-                    'message' => 'There are incorect values in the form!',
-                    'errors' => $validator->getMessageBag()->toArray()
-                ), 422);
-            }
-            $this->throwValidationException(
-                $request, $validator
-            );
-        }*/
-
         $comment->fill($request->all());
         if (empty($request->img_leave)) {
             if ($request->file('img')) {

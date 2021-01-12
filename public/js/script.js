@@ -1,11 +1,13 @@
 $(document).ready(function() {
 
     // Выключение отображения flash-сообщений
+    /*
     window.setTimeout(function () {
         $(".flash").fadeTo(500, 0).slideUp(500, function () {
             $(this).remove();
         });
-    }, 10000);
+    }, 8000);
+    */
 
     // Информация об авторе
     $("a.author-info").on('click', function (e) {
@@ -190,7 +192,7 @@ $(document).ready(function() {
                 },
                 beforeSend: loaderOn(),
                 success: function (data) {
-                    console.log(data);
+                    //console.log(data);
                     document.location.href = '/';
                 },
                 complete: loaderOff(),
@@ -225,19 +227,19 @@ $(document).ready(function() {
             },
             beforeSend: loaderOn(),
             success: function (data) {
-                if(data.success == 'true') {
-                    $('#comment-modal-dialog').html(data.html);
-                    $("#comment-modal-lg").modal('show');
-                } else {
-                    alert('Error data!!!');
-                }
+                $('#comment-modal-dialog').html(data.html);
+                $("#comment-modal-lg").modal('show');
             },
             complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
                 loaderOff();
-                //console.log(JSON.stringify(jqXHR));
-                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                //console.warn(jqXHR.responseText);
+                let response = jqXHR.responseJSON;
+                console.log(response.message);
+                if (response.message === 'Unauthenticated.') {
+                    document.location.href = '/login';
+                } else {
+                    alert(response.message);
+                }
             },
             timeout: 8000
         });
@@ -249,17 +251,15 @@ $(document).ready(function() {
 
     $('body').on('submit', '#create-comment-form', function (e) {
         e.preventDefault();
+        $('div.alert').remove();
         const token = $('input[name="_token"]').attr('value');
         const url = $(this).attr('data-attr');
         let formData = new FormData($(this)[0]);
-
-        /*
-        for (var pair of formData.entries()) {
+        /*for (var pair of formData.entries()) {
             console.log(pair[0]+ ', ' + pair[1]);
         }
         alert();
         }*/
-
         $.ajax({
             url: url,
             type: 'POST',
@@ -274,28 +274,21 @@ $(document).ready(function() {
             beforeSend: loaderOn(),
             success: function (data) {
                 $("#comment-modal-lg").modal('hide');
-                //const errorFlash = createFlash('Это ошибка!', 'danger');
-                //const successFlash = createFlash('Это успешное сообщение!', 'success');
-
-                //$('.container-main').prepend(errorFlash);
-                //$('.container').prepend(successFlash);
                 let message = data.success;
-                if(message) {
-                    let successFlash = createFlash(message, 'success');
-                    console.log(successFlash);
-                    $('.container-main').prepend(successFlash);
-                } else {
-                    alert('Error data!!!');
-                }
-                //console.log(data);
-                //document.location.href = '/';
+                let successFlash = createFlash(message, 'success');
+                $('.container-main').prepend(successFlash);
             },
             complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
                 loaderOff();
+                let response = jqXHR.responseJSON;
+                console.log(response);
+                response.errors.forEach(function(errorMessage, index, array) {
+                    $('.modal-body').prepend(createFlash(errorMessage, 'danger'));
+                });
                 //console.log(JSON.stringify(jqXHR));
-                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                console.warn(jqXHR.responseText);
+                //console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                //console.warn(jqXHR.responseText);
             },
             timeout: 8000
         });
@@ -348,8 +341,8 @@ $(document).ready(function() {
 
     $('body').on('submit', '#edit-comment-form', function (e) {
         e.preventDefault();
+        $('div.alert').remove();
         const url = $(this).attr('data-attr');
-        console.log(url);
         const token = $('input[name="_token"]').attr('value');
         let formData = new FormData($(this)[0]);
 /*
@@ -384,9 +377,11 @@ $(document).ready(function() {
             complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
                 loaderOff();
-                console.log(JSON.stringify(jqXHR));
-                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                console.warn(jqXHR.responseText);
+                let response = jqXHR.responseJSON;
+                console.log(response);
+                response.errors.forEach(function(errorMessage, index, array) {
+                    $('.modal-body').prepend(createFlash(errorMessage, 'danger'));
+                });
             },
             timeout: 8000
         });
@@ -396,6 +391,7 @@ $(document).ready(function() {
      * Отображение/сокрытие диалога загрузки файла изображения к отзыву
      *
      */
+
     $('body').on('change', '#img-checkbox', function () {
         const imageInput = $('#img-input');
         if(this.checked){
