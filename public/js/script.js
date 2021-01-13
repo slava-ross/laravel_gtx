@@ -192,15 +192,14 @@ $(document).ready(function() {
                 },
                 beforeSend: loaderOn(),
                 success: function (data) {
-                    //console.log(data);
                     document.location.href = '/';
                 },
                 complete: loaderOff(),
                 error: function (jqXHR, textStatus, errorThrown) {
                     loaderOff();
-                    console.log(JSON.stringify(jqXHR));
-                    console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                    console.warn(jqXHR.responseText);
+                    //console.log(JSON.stringify(jqXHR));
+                    //console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                    //console.warn(jqXHR.responseText);
                 },
                 timeout: 8000
             });
@@ -234,7 +233,6 @@ $(document).ready(function() {
             error: function (jqXHR, textStatus, errorThrown) {
                 loaderOff();
                 let response = jqXHR.responseJSON;
-                console.log(response.message);
                 if (response.message === 'Unauthenticated.') {
                     document.location.href = '/login';
                 } else {
@@ -286,9 +284,6 @@ $(document).ready(function() {
                 response.errors.forEach(function(errorMessage, index, array) {
                     $('.modal-body').prepend(createFlash(errorMessage, 'danger'));
                 });
-                //console.log(JSON.stringify(jqXHR));
-                //console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                //console.warn(jqXHR.responseText);
             },
             timeout: 8000
         });
@@ -318,7 +313,6 @@ $(document).ready(function() {
             },
             beforeSend: loaderOn(),
             success: function (data) {
-                //console.log(data);
                 if(data.success == 'true') {
                     $('#comment-modal-dialog').html(data.html);
                 } else {
@@ -329,9 +323,12 @@ $(document).ready(function() {
             complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
                 loaderOff();
-                //console.log(JSON.stringify(jqXHR));
-                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                //console.warn(jqXHR.responseText);
+                let response = jqXHR.responseJSON;
+                if (response.message === 'Unauthenticated.') {
+                    document.location.href = '/login';
+                } else {
+                    alert(response.message);
+                }
             },
             timeout: 8000
         });
@@ -345,11 +342,6 @@ $(document).ready(function() {
         const url = $(this).attr('data-attr');
         const token = $('input[name="_token"]').attr('value');
         let formData = new FormData($(this)[0]);
-/*
-        for (var pair of formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]);
-        }
-*/
         $.ajax({
             url: url,
             type: 'POST',
@@ -366,13 +358,20 @@ $(document).ready(function() {
                 $("#comment-modal-lg").modal('hide');
                 console.log(data);
                 let message = data.success;
+                let image = data.img;
+                if (image === null) {
+                    image = 'http://laravel_gtx/images/default.jpg';
+                }
                 if(message) {
                     let successFlash = createFlash(message, 'success');
                     $('.container-main').prepend(successFlash);
+                    $('h2#title').text(data.title);
+                    $('div.card-img').attr('style', 'background-image: url(' + image + ')');
+                    $('div.card-descr').text(data.comment_text);
+                    $('div.card-rating').text(data.rating);
                 } else {
                     alert('Error data!!!');
                 }
-                //document.location.href = '/comment/';
             },
             complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {

@@ -137,7 +137,7 @@ class CommentController extends Controller
         $comment = Comment::find($id);
         if ($comment->user_id != \Auth::user()->id) {
             //return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
-            return \Response::json(['error' => 'Вы не можете удалить данный отзыв!'], 403);
+            return \Response::json(['error' => 'Вы не можете редактировать данный отзыв!'], 403);
         }
         $new_comment = false;
         $modal_title = "Редактирование отзыва №$comment->id";
@@ -153,7 +153,7 @@ class CommentController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(CommentRequest $request, $id)
     {
@@ -175,8 +175,13 @@ class CommentController extends Controller
             }
         }
         $comment->update();
-        //return \Response::json(['title' => $request->title, 'comment_text' => $request->comment_text, 'rating' => $request->rating, 'leave' => $request->img_leave, 'img' => $request->img]);
-        return \Response::json(['success' => 'Отзыв успешно изменён!']);
+        return \Response::json([
+            'success' => 'Отзыв успешно изменён!',
+            'title' => $comment->title,
+            'comment_text' => $comment->comment_text,
+            'rating' => $comment->rating,
+            'img' => $comment->img
+        ]);
         //return redirect()->route('comment.show', ['comment' => $comment->id])->with('success', 'Отзыв успешно отредактирован!');
     }
     /**
