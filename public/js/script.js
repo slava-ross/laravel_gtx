@@ -1,13 +1,11 @@
 $(document).ready(function() {
 
     // Выключение отображения flash-сообщений
-    /*
-    window.setTimeout(function () {
+    /*window.setTimeout(function () {
         $(".flash").fadeTo(500, 0).slideUp(500, function () {
             $(this).remove();
         });
-    }, 8000);
-    */
+    }, 8000);*/
 
     // Информация об авторе
     $("a.author-info").on('click', function (e) {
@@ -50,12 +48,6 @@ $(document).ready(function() {
 
         return alertElement;
     }
-
-    //const errorFlash = createFlash('Это ошибка!', 'danger');
-    //const successFlash = createFlash('Это успешное сообщение!', 'success');
-
-    //$('.container-main').prepend(errorFlash);
-    //$('.container').prepend(successFlash);
 
     /*
      * Прелоадер - AJAX-методы
@@ -192,11 +184,22 @@ $(document).ready(function() {
                 },
                 beforeSend: loaderOn(),
                 success: function (data) {
-                    document.location.href = '/';
+                    if (data.success === 'true') {
+                        document.location.href = '/';
+                    }
                 },
                 complete: loaderOff(),
                 error: function (jqXHR, textStatus, errorThrown) {
                     loaderOff();
+                    let response = jqXHR.responseJSON;
+                    if (response.message === 'Unauthenticated.') {
+                        document.location.href = '/login';
+                    }
+                    else {
+                        response.errors.forEach(function(errorMessage, index, array) {
+                            $('.container-main').prepend(createFlash(errorMessage, 'danger'));
+                        });
+                    }
                     //console.log(JSON.stringify(jqXHR));
                     //console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
                     //console.warn(jqXHR.responseText);
@@ -226,8 +229,12 @@ $(document).ready(function() {
             },
             beforeSend: loaderOn(),
             success: function (data) {
-                $('#comment-modal-dialog').html(data.html);
-                $("#comment-modal-lg").modal('show');
+                if(data.success === 'true') {
+                    $('#comment-modal-dialog').html(data.html);
+                    $("#comment-modal-lg").modal('show');
+                } else {
+                    alert('Data Error!');
+                }
             },
             complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
@@ -236,14 +243,12 @@ $(document).ready(function() {
                 if (response.message === 'Unauthenticated.') {
                     document.location.href = '/login';
                 } else {
-                    alert(response.message);
+                    alert('Error: ' + response);
                 }
             },
             timeout: 8000
         });
     });
-
-    // Сброс формы - функция?
 
     /* Ajax-отправка формы создания отзыва */
 
@@ -271,19 +276,25 @@ $(document).ready(function() {
             data: formData,
             beforeSend: loaderOn(),
             success: function (data) {
-                $("#comment-modal-lg").modal('hide');
-                let message = data.success;
-                let successFlash = createFlash(message, 'success');
-                $('.container-main').prepend(successFlash);
+                if (data.success === 'true') {
+                    $("#comment-modal-lg").modal('hide');
+                    document.location.href = '/';
+                } else {
+                    alert('Data Error!');
+                }
             },
             complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
                 loaderOff();
                 let response = jqXHR.responseJSON;
-                console.log(response);
-                response.errors.forEach(function(errorMessage, index, array) {
-                    $('.modal-body').prepend(createFlash(errorMessage, 'danger'));
-                });
+                if (response.message === 'Unauthenticated.') {
+                    document.location.href = '/login';
+                }
+                else {
+                    response.errors.forEach(function(errorMessage, index, array) {
+                        $('.modal-body').prepend(createFlash(errorMessage, 'danger'));
+                    });
+                }
             },
             timeout: 8000
         });
@@ -299,7 +310,6 @@ $(document).ready(function() {
     $("#edit-comment").on('click', function (e) {
         e.preventDefault();
         let token = $('input[name="_token"]').attr('value');
-        //let comment_id = $(this).data("id");
         let url = $(this).attr('data-attr');
         $.ajax({
             type: 'GET',
@@ -313,12 +323,12 @@ $(document).ready(function() {
             },
             beforeSend: loaderOn(),
             success: function (data) {
-                if(data.success == 'true') {
+                if(data.success === 'true') {
                     $('#comment-modal-dialog').html(data.html);
+                    $("#comment-modal-lg").modal('show');
                 } else {
-                    $('#comment-modal-dialog').html('ERROR!!!');
+                    alert('Data Error!');
                 }
-                $("#comment-modal-lg").modal('show');
             },
             complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
@@ -326,8 +336,11 @@ $(document).ready(function() {
                 let response = jqXHR.responseJSON;
                 if (response.message === 'Unauthenticated.') {
                     document.location.href = '/login';
-                } else {
-                    alert(response.message);
+                }
+                else {
+                    response.errors.forEach(function(errorMessage, index, array) {
+                        $('.container-main').prepend(createFlash(errorMessage, 'danger'));
+                    });
                 }
             },
             timeout: 8000
@@ -356,31 +369,33 @@ $(document).ready(function() {
             beforeSend: loaderOn(),
             success: function (data) {
                 $("#comment-modal-lg").modal('hide');
-                console.log(data);
                 let message = data.success;
-                let image = data.img;
-                if (image === null) {
-                    image = 'http://laravel_gtx/images/default.jpg';
-                }
+                let image = (data.img === null) ? 'http://laravel_gtx/images/default.jpg' : data.img;
                 if(message) {
                     let successFlash = createFlash(message, 'success');
                     $('.container-main').prepend(successFlash);
                     $('h2#title').text(data.title);
                     $('div.card-img').attr('style', 'background-image: url(' + image + ')');
-                    $('div.card-descr').text(data.comment_text);
-                    $('div.card-rating').text(data.rating);
+                    const span_descr = $('.card-descr > span');
+                    $('.card-descr').empty().prepend(span_descr).append(data.comment_text);
+                    const span_rating = $('.card-rating > span');
+                    $('.card-rating').empty().prepend(span_rating).append(data.rating);
                 } else {
-                    alert('Error data!!!');
+                    alert('Data Error!');
                 }
             },
             complete: loaderOff(),
             error: function (jqXHR, textStatus, errorThrown) {
                 loaderOff();
                 let response = jqXHR.responseJSON;
-                console.log(response);
-                response.errors.forEach(function(errorMessage, index, array) {
-                    $('.modal-body').prepend(createFlash(errorMessage, 'danger'));
-                });
+                if (response.message === 'Unauthenticated.') {
+                    document.location.href = '/login';
+                }
+                else {
+                    response.errors.forEach(function(errorMessage, index, array) {
+                        $('.container-main').prepend(createFlash(errorMessage, 'danger'));
+                    });
+                }
             },
             timeout: 8000
         });

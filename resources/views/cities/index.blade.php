@@ -29,7 +29,8 @@
                 </form>
                 <ul class="list-group">
                     @foreach($cities as $city)
-                        <li class="list-group-item list-group-item-info d-inline-flex justify-content-between"><a href="{{ asset(route('comment.index', ['city_id'=>$city->id, 'city_name'=>$city->name])) }}" class="card-descr">{{ $city->name }}</a><span>Отзывов: {{ $city->cnt ? $city->cnt : '0' }}</span></li>
+                        {{--, 'city_name'=>$city->name--}}
+                        <li class="list-group-item list-group-item-info d-inline-flex justify-content-between"><a href="{{ asset(route('comment.index', ['city_id'=>$city->id])) }}" class="card-descr">{{ $city->name }}</a><span>Отзывов: {{ $city->cnt ? $city->cnt : '0' }}</span></li>
                     @endforeach
                 </ul>
             </div>

@@ -80,7 +80,7 @@ class Comment extends Model
             )
             ->where('u.id', '=', $authorId)
             ->orderBy('comments.created_at', 'desc')
-            ->paginate(4);
+            ->p;
         */
         $comments = parent::join('users as u', 'user_id', '=', 'u.id')
             ->join('city_comment as cc', 'comments.id', '=', 'cc.comment_id')

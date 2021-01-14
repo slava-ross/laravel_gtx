@@ -33,7 +33,7 @@ class VerifyMail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Подтверждение регистрации в ' . env('APP_NAME'))
+            ->subject('Подтверждение регистрации в ' . config('app.name', 'Laravel_Azaza'))
             ->markdown('emails.auth.verify');
     }
 }

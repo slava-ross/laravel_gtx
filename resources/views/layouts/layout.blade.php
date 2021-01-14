@@ -15,9 +15,14 @@
     <div class="container collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="col-6 navbar-nav mr-auto">
             <li class="nav-item active">
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'Laravel') }}
+                </a>
+            </li>
+            <li class="nav-item active offset-2">
                 <a class="nav-link" href="/">Главная</a>
             </li>
-            <li class="nav-item active offset-3">
+            <li class="nav-item active offset-2">
                 <a id="create-comment" class="nav-link" href="#">Создать отзыв</a>
             </li>
         </ul>

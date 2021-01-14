@@ -19,16 +19,14 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function index(Request $request)
     {
         $cityName = $request->city_name;
         $cityId = $request->city_id;
-        if (!$request->session()->has('city_chosen')) {
-            session(['city_chosen' => $cityName]);
-        }
-        if (empty($cityId)) { // Пришли из модального окна только с именем города
+        // Пришли из модального окна только с именем города
+        if (empty($cityId)) {
             $city = City::getCityByName($cityName);
             if (empty($city)) { // Новый город
                 $city = City::create([
@@ -36,13 +34,19 @@ class CommentController extends Controller
                 ]);
             }
             $cityId = $city->id;
+        // Пришли со страницы выбора города только с id города
+        } elseif (empty($cityName)) {
+            $city = City::find($cityId);
+            if (!$city) {
+                return redirect()->route('/')->withErrors('Попытка выбрать несуществующий город!');
+            }
+            $cityName = $city->name;
         }
-
+        // Сохранение имени города в сессионной переменной
+        if (!$request->session()->has('city_chosen')) {
+            session(['city_chosen' => $cityName]);
+        }
         $comments = Comment::getCommentsByCityId($cityId);
-        /*JavaScript::put([
-            'foo_token' => 'qwerty'
-        ]);*/
-
         $title = "Отзывы по городу $cityName";
         return view('comments.index', compact('comments','cityName','title'));
     }
@@ -50,7 +54,7 @@ class CommentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function create()
     {
@@ -63,14 +67,14 @@ class CommentController extends Controller
             $viewHTML = view('comments.create', compact('new_comment', 'modal_title','button_id','button_text'))->render();
             return \Response::json(['success' => 'true', 'html' => $viewHTML]);
         }
-        return \Response::json(['error' => 'Вы не можете удалить данный отзыв!'], 401);
+        return \Response::json(['success' => 'false'], 401);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(CommentRequest $request)
     {
@@ -102,12 +106,12 @@ class CommentController extends Controller
                 $citiesIdArray[] = $item['id'];
             }
         }
-
         foreach($citiesIdArray as $city_id) {
             $city = City::find($city_id);
             $city->comments()->save($comment);
         }
-        return \Response::json(['success' => 'Отзыв успешно создан!']);
+        session(['success' => 'Отзыв успешно создан!']);
+        return \Response::json(['success' => 'true']);
     }
 
     /**
@@ -120,7 +124,7 @@ class CommentController extends Controller
     {
         $comment = Comment::find($id);
         if (!$comment) {
-            return redirect()->route('/')->withErrors('Что Вы задумали?');
+            return redirect()->route('/')->withErrors('Попытка посмотреть несуществующий отзыв!');
         }
         $user = $comment->user;
         return view('comments.show', compact('comment', 'user'));
@@ -136,8 +140,7 @@ class CommentController extends Controller
     {
         $comment = Comment::find($id);
         if ($comment->user_id != \Auth::user()->id) {
-            //return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
-            return \Response::json(['error' => 'Вы не можете редактировать данный отзыв!'], 403);
+            return \Response::json(['errors' => ['Вы не можете редактировать данный отзыв!']], 403);
         }
         $new_comment = false;
         $modal_title = "Редактирование отзыва №$comment->id";
@@ -158,10 +161,6 @@ class CommentController extends Controller
     public function update(CommentRequest $request, $id)
     {
         $comment = Comment::find($id);
-        if ($comment->user_id != \Auth::user()->id) {
-            return \Response::json(['error' => 'Вы не можете редактировать данный отзыв!'], 403);
-            //return redirect()->route('/')->withErrors('Вы не можете редактировать данный отзыв!');
-        }
 
         $comment->fill($request->all());
         if (empty($request->img_leave)) {
@@ -182,7 +181,6 @@ class CommentController extends Controller
             'rating' => $comment->rating,
             'img' => $comment->img
         ]);
-        //return redirect()->route('comment.show', ['comment' => $comment->id])->with('success', 'Отзыв успешно отредактирован!');
     }
     /**
      * Remove the specified resource from storage.
@@ -194,12 +192,11 @@ class CommentController extends Controller
     {
         $comment = Comment::find($id);
         if ($comment->user_id != \Auth::user()->id) {
-            return \Response::json(['error' => 'Вы не можете удалить данный отзыв!'], 403);
-            //return redirect()->route('/')->withErrors('Вы не можете удалить данный отзыв!');
+            return \Response::json(['errors' => ['Вы не можете удалить данный отзыв!']], 403);
         }
         $comment->delete();
+        session(['success' => 'Отзыв успешно удалён!']);
         return \Response::json(['success' => 'true']);
-        //return redirect()->route('/')->with('success', 'Отзыв успешно удалён!');
     }
     /**
      * Get all comments of a certain author.
@@ -210,6 +207,9 @@ class CommentController extends Controller
     public function getAuthorsComments($id)
     {
             $comments = Comment::getCommentsByAuthor($id);
+            if ($comments->isEmpty()) {
+                return redirect()->route('/')->withErrors('Попытка посмотреть отзывы несуществующего автора!');
+            }
             $fio = $comments->first()->fio;
             $title = "Отзывы автора $fio";
             return view('comments.index', compact('comments', 'fio', 'title'));

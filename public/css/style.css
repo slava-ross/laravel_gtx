@@ -4,6 +4,12 @@ body {
 nav {
     margin-bottom: 15px;
 }
+.navbar-brand {
+    padding: 3px;
+    background-color: darkgray;
+    border-radius: 4px;
+    border: #777 1px solid;
+}
 .card {
     margin-bottom: 10px;
 }

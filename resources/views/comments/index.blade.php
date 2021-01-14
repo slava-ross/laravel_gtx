@@ -6,9 +6,6 @@
         @if(isset($cityName))
             <h2 class="mx-auto">Нет отзывов по городу "<?=htmlspecialchars($cityName)?>"</h2>
         @endif
-        {{-- @if(isset($fio))
-            <h2>У автора "<?=htmlspecialchars($fio)?> нет отзывов"</h2>
-        @endif --}}
     @else
         <h2 class="mx-auto">{{ $title }}</h2>
         <div class="row">
