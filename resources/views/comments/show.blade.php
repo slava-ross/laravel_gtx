@@ -26,28 +26,6 @@
                                 <a id="edit-comment" data-attr="{{ route('comment.edit', ['comment'=>$comment->id]) }}" class="btn btn-outline-success">Редактировать</a>
                                 @csrf
                                 <input type="submit" id="delete-comment" class="btn btn-outline-danger delete-comment" data-id="{{ $comment->id }}" value="Удалить">
-
-                                {{-- Без Ajax --
-                                <form action="{{ route('comment.destroy', ['comment'=>$comment->id]) }}" method="POST" onsubmit="if (confirm('Точно удалить отзыв?')) { return true } else { return false }">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="submit" class="btn btn-outline-danger" value="Удалить">
-                                </form>
-                                --}}
-
-                                {{-- !-- Delete Warning Modal -->
-                                <form action="{{ route('projects.destroy', $project->id) }}" method="post">
-                                    <div class="modal-body">
-                                        @csrf
-                                        @method('DELETE')
-                                        <h5 class="text-center">Are you sure you want to delete {{ $project->name }} ?</h5>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-danger">Yes, Delete Project</button>
-                                    </div>
-                                </form>
-                                --}}
                             @endif
                         @endauth
                     </div>

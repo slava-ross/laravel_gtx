@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class Comment extends Model
 {
     /**
-     * The attributes that are mass assignable.
+     * Атрибуты для массового заполнения полей модели
      *
      * @var array
      */
@@ -17,10 +17,12 @@ class Comment extends Model
         'title', 'comment_text', 'rating',
     ];
 
+    /*
+     * Методы для связи отношений модели
+     */
     public function cities()
     {
         return $this->belongsToMany('App\City');
-        //return $this->belongsToMany('App\City', 'city_comment', 'comment_id', 'city_id'); //related; table; foreignPivotKey; relatedPivotKey.
     }
 
     public function user()
@@ -28,6 +30,9 @@ class Comment extends Model
         return $this->belongsTo('App\User', 'user_id', 'id');
     }
 
+    /*
+     * Получение списка отзывов по имени города
+     */
     public static function getCommentsByCityName($cityName)
     {
         $city = City::where('name', $city_name)->first();
@@ -35,6 +40,9 @@ class Comment extends Model
         return $comments;
     }
 
+    /*
+     * Получение списка отзывов по id города
+     */
     public static function getCommentsByCityId($cityId)
     {
         $comments = parent::join('users as u', 'user_id', '=', 'u.id')
@@ -60,22 +68,27 @@ class Comment extends Model
         return $comments;
     }
 
+    /*
+     * Получение списка отзывов по id автора (пользователя)
+     */
     public static function getCommentsByAuthor($authorId)
     {
         $commentsRaw = DB::select(
-            DB::raw("WITH ccc AS (SELECT comment_id, GROUP_CONCAT(ct.name SEPARATOR ', ') names
+            DB::raw("WITH ccc AS (
+                SELECT comment_id, GROUP_CONCAT(ct.name SEPARATOR ', ') names
                 FROM city_comment cc
                 JOIN cities ct
                 ON cc.city_id = ct.id
-                GROUP BY comment_id)
+                GROUP BY comment_id
+                )
                 SELECT
-                    com.id,
+                    com.id AS id,
                     title,
                     comment_text,
                     rating,
                     img,
                     com.created_at,
-                    u.id,
+                    u.id AS user_id,
                     u.fio,
                     u.email,
                     u.phone,
@@ -91,7 +104,6 @@ class Comment extends Model
         );
 
         $comments = collect($commentsRaw);
-
         return $comments;
     }
 }

@@ -1,5 +1,5 @@
 @component('mail::message')
-# Email Confirmation
+# Письмо подтверждения регистрации
 
 Пожалуйста, пройдите по следующей ссылке для завершения регистрации:
 
@@ -7,6 +7,6 @@
     Verify Email
 @endcomponent
 
-Thanks,<br>
+Спасибо!,<br>
 {{ config('app.name') }}
 @endcomponent

@@ -72,7 +72,7 @@ $(document).ready(function() {
      * DADATA - подсказка города
      *
      */
-    var token = '06437c5f9078834928053139b09331cd4c2a17d8';
+    var token = '06437c5f9078834928053139b09331cd4c2a17d8'; // Ему тут не место (fast dev :-)
     var defaultFormatResult = $.Suggestions.prototype.formatResult;
     function formatResult(value, currentValue, suggestion, options) {
         var newValue = suggestion.data.city;
@@ -153,7 +153,7 @@ $(document).ready(function() {
         })
     });
 
-    // end dadata
+    // --- end dadata ---
 
     $('body').on('click', '.city-item__remove', function () {
         let liCityItem = $(this).parent();
@@ -406,7 +406,6 @@ $(document).ready(function() {
      * Отображение/сокрытие диалога загрузки файла изображения к отзыву
      *
      */
-
     $('body').on('change', '#img-checkbox', function () {
         const imageInput = $('#img-input');
         if(this.checked){

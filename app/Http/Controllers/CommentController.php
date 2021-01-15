@@ -19,13 +19,13 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function index(Request $request)
     {
         $cityName = $request->city_name;
         $cityId = $request->city_id;
-        // Пришли из модального окна только с именем города
+        // --- Пришли из модального окна только с именем города ---
         if (empty($cityId)) {
             $city = City::getCityByName($cityName);
             if (empty($city)) { // Новый город
@@ -34,7 +34,7 @@ class CommentController extends Controller
                 ]);
             }
             $cityId = $city->id;
-        // Пришли со страницы выбора города только с id города
+        // --- Пришли со страницы выбора города только с id города ---
         } elseif (empty($cityName)) {
             $city = City::find($cityId);
             if (!$city) {
@@ -42,7 +42,7 @@ class CommentController extends Controller
             }
             $cityName = $city->name;
         }
-        // Сохранение имени города в сессионной переменной
+        // --- Сохранение имени города в сессионной переменной ---
         if (!$request->session()->has('city_chosen')) {
             session(['city_chosen' => $cityName]);
         }
@@ -87,12 +87,13 @@ class CommentController extends Controller
             $url = Storage::url($path);
             $comment->img = $url;
         }
-        $citiesIdArray = []; // Массив для хранения id городов
+        $citiesIdArray = []; // --- Массив для хранения id городов ---
 
         if (!empty($cities)) {
             foreach ($cities as $cityName){
                 $city = City::getCityByName($cityName);
-                if (empty($city)) { // Новый город
+                // --- Новый город ---
+                if (empty($city)) {
                     $city = City::create([
                         'name' => $cityName,
                     ]);
@@ -100,7 +101,7 @@ class CommentController extends Controller
                 $citiesIdArray[] = $city->id;
             }
         }
-        else { // Если пустой список городов - сохраняем комментарий для всех
+        else { // --- Если пустой список городов - сохраняем комментарий для всех ---
             $cityItems = City::all('id')->toArray();
             foreach($cityItems as $item){
                 $citiesIdArray[] = $item['id'];
@@ -118,7 +119,7 @@ class CommentController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function show($id)
     {
@@ -134,7 +135,7 @@ class CommentController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit($id)
     {
@@ -166,7 +167,6 @@ class CommentController extends Controller
         if (empty($request->img_leave)) {
             if ($request->file('img')) {
                 $path = Storage::putFile('public', $request->file('img'));
-                dd($path);
                 $url = Storage::url($path);
                 $comment->img = $url;
             }
@@ -205,7 +205,7 @@ class CommentController extends Controller
      * Get all comments of a certain author.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function getAuthorsComments($id)
     {

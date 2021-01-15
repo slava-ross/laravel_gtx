@@ -12,7 +12,6 @@ Route::get('/verify/{token}', 'Auth\RegisterController@verify')->name('register.
 Route::get('/get_captcha/{config?}', function (\Mews\Captcha\Captcha $captcha, $config = 'default') {
     return $captcha->src($config);
 });
-Route::get('/ajax/{city_name}', 'AjaxController@ajaxChooseCity');//->name('ajax.city');
 
 /*
 Route::resource('/comment', 'CommentController');

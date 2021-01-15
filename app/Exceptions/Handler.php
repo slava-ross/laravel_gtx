@@ -53,20 +53,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        /*if ($validator->fails()) {
-           if($request->ajax())
-           {
-               return response()->json(array(
-                   'success' => false,
-                   'message' => 'There are incorect values in the form!',
-                   'errors' => $validator->getMessageBag()->toArray()
-               ), 422);
-           }
-           $this->throwValidationException(
-               $request, $validator
-           );
-       }
-       */
         if(($request->ajax() && !$request->pjax()) || $request->wantsJson()) {
             if($exception instanceof ValidationException) {
                 return new JsonResponse([
