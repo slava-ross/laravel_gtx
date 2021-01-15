@@ -14,7 +14,7 @@
                 <div class="card">
                     <div class="card-header"><h3>{{ Str::length($comment->title) > 30 ? Str::substr($comment->title, 0, 30) . '...' : $comment->title }}</h3></div>
                     <div class="card-body">
-                        <div class="card-img mb-1" style="background-image: url({{ $comment->img ?? asset('images/default.jpg') }})"></div>
+                        <div class="card-img mb-1" style="background-image: url({{ asset($comment->img) ?? asset('images/default.jpg') }})"></div>
                         @if(isset($fio))
                             <div class="card-city mb-1"><span class="font-weight-bold">Город(а):</span> {{ $comment->names }}</div>
                         @endif

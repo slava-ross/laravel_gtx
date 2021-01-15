@@ -5,7 +5,7 @@
             <div class="card">
                 <div class="card-header"><h3 id="title">{{ $comment->title }}</h3></div>
                 <div class="card-body">
-                    <div class="card-img card-img__max mb-1" style="background-image: url({{ $comment->img ?? asset('images/default.jpg')}})"></div>
+                    <div class="card-img card-img__max mb-1" style="background-image: url({{ asset($comment->img) ?? asset('images/default.jpg')}})"></div>
                     <div class="card-descr mb-1"><span class="font-weight-bold">Отзыв: </span>{{ $comment->comment_text }}</div>
                     <div class="card-author mb-1">
                         <span class="font-weight-bold">Автор:</span>
