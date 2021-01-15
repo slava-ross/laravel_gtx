@@ -4,7 +4,7 @@
             @if(!empty($cities)) {{-- Есть список городов с отзывами для отображения списка --}}
                 <ul class="list-group">
                     @foreach($cities as $city)
-                        <li class="list-group-item list-group-item-info"><a href="{{ asset(route('comment.index', ['city_id'=>$city->id, 'city_name'=>$city->name])) }}" class="card-descr">{{ $city->name }}</a></li>
+                        <li class="list-group-item list-group-item-info"><a href="{{ asset(route('comment.index', ['city_id'=>$city->id])) }}" class="card-descr">{{ $city->name }}</a></li>
                     @endforeach
                 </ul>
             @else {{-- Нет городов с отзывами --}}

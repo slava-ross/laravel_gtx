@@ -16,11 +16,11 @@ class CityController extends Controller
     {
         if ($request->session()->has('city_chosen')) {
             $city_name = $request->session()->get('city_chosen');
-            $city = City::getCityByName($city_name);
+            //$city = City::getCityByName($city_name);
             // --- transit data to flashes ---
             $success = $request->session()->get('success') ?? NULL;
             $errors = $request->session()->get('errors') ?? NULL;
-            return redirect()->route('comment.index', ['city_id' => $city->id, 'city_name' => $city_name])->with('success', $success)->with('errors', $errors);
+            return redirect()->route('comment.index', compact('city_name'))->with('success', $success)->with('errors', $errors);
         }
         else {
             $ip_address = $request->ip();

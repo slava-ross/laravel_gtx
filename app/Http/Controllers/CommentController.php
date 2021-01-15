@@ -25,7 +25,7 @@ class CommentController extends Controller
     {
         $cityName = $request->city_name;
         $cityId = $request->city_id;
-        // --- Пришли из модального окна только с именем города ---
+        // --- Пришли из модального окна только с именем города или из автокомплита с выбором имени города или взяли из сессионной переменной ---
         if (empty($cityId)) {
             $city = City::getCityByName($cityName);
             if (empty($city)) { // Новый город
@@ -34,7 +34,7 @@ class CommentController extends Controller
                 ]);
             }
             $cityId = $city->id;
-        // --- Пришли со страницы выбора города только с id города ---
+        // --- Пришли со страницы выбора города только с id города  ---
         } elseif (empty($cityName)) {
             $city = City::find($cityId);
             if (!$city) {
