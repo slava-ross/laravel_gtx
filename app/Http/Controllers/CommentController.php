@@ -166,6 +166,7 @@ class CommentController extends Controller
         if (empty($request->img_leave)) {
             if ($request->file('img')) {
                 $path = Storage::putFile('public', $request->file('img'));
+                dd($path);
                 $url = Storage::url($path);
                 $comment->img = $url;
             }
@@ -194,7 +195,9 @@ class CommentController extends Controller
         if ($comment->user_id != \Auth::user()->id) {
             return \Response::json(['errors' => ['Вы не можете удалить данный отзыв!']], 403);
         }
+        Storage::disk('public')->delete(basename($comment->img));
         $comment->delete();
+
         session(['success' => 'Отзыв успешно удалён!']);
         return \Response::json(['success' => 'true']);
     }

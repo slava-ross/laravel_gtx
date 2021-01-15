@@ -3,7 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\Types\Self_;
+use Illuminate\Support\Facades\DB;
+//use phpDocumentor\Reflection\Types\Self_;
 
 class Comment extends Model
 {
@@ -61,47 +62,36 @@ class Comment extends Model
 
     public static function getCommentsByAuthor($authorId)
     {
-        /*
-         * Без учёта городов
-         */
-        /*
-        $comments = parent::join('users as u', 'user_id', '=', 'u.id')
-            ->select(
-                'comments.id',
-                'title',
-                'comment_text',
-                'rating',
-                'img',
-                'comments.created_at',
-                'user_id',
-                'u.fio',
-                'u.email',
-                'u.phone'
+        $commentsRaw = DB::select(
+            DB::raw("WITH ccc AS (SELECT comment_id, GROUP_CONCAT(ct.name SEPARATOR ', ') names
+                FROM city_comment cc
+                JOIN cities ct
+                ON cc.city_id = ct.id
+                GROUP BY comment_id)
+                SELECT
+                    com.id,
+                    title,
+                    comment_text,
+                    rating,
+                    img,
+                    com.created_at,
+                    u.id,
+                    u.fio,
+                    u.email,
+                    u.phone,
+                    names
+                FROM comments com
+                JOIN users u
+                ON com.user_id = u.id
+                JOIN ccc
+                ON ccc.comment_id = com.id
+                WHERE u.id = $authorId
+                ORDER BY com.created_at DESC"
             )
-            ->where('u.id', '=', $authorId)
-            ->orderBy('comments.created_at', 'desc')
-            ->p;
-        */
-        $comments = parent::join('users as u', 'user_id', '=', 'u.id')
-            ->join('city_comment as cc', 'comments.id', '=', 'cc.comment_id')
-            ->leftJoin('cities as c', 'city_id', '=', 'c.id')
-            ->select(
-                'comments.id',
-                'title',
-                'comment_text',
-                'rating',
-                'img',
-                'comments.created_at',
-                'user_id',
-                'u.fio',
-                'u.email',
-                'u.phone',
-                'c.id as city_id',
-                'c.name as city_name'
-            )
-            ->where('u.id', '=', $authorId)
-            ->orderBy('comments.created_at', 'desc')
-            ->paginate(4);
+        );
+
+        $comments = collect($commentsRaw);
+
         return $comments;
     }
 }

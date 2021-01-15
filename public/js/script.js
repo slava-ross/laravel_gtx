@@ -115,14 +115,14 @@ $(document).ready(function() {
 
                 // Удаление существующего города из списка и скрытого селекта
                 $("#city-select option").each(function () {
-                    if (cityName == $(this).val()) {
+                    if (cityName === $(this).val()) {
                         $(this).remove();
                         deleteFlag = true;
                     }
                 });
                 if (deleteFlag) {
                     $("#city-shell li").each(function () {
-                        if (cityName == $(this).text().slice(1)) {
+                        if (cityName === $(this).text().slice(1)) {
                             $(this).remove();
                         }
                     });
@@ -295,6 +295,7 @@ $(document).ready(function() {
                         $('.modal-body').prepend(createFlash(errorMessage, 'danger'));
                     });
                 }
+                console.log(response);
             },
             timeout: 8000
         });
@@ -374,7 +375,7 @@ $(document).ready(function() {
                 if(message) {
                     let successFlash = createFlash(message, 'success');
                     $('.container-main').prepend(successFlash);
-                    $('h2#title').text(data.title);
+                    $('#title').text(data.title);
                     $('div.card-img').attr('style', 'background-image: url(' + image + ')');
                     const span_descr = $('.card-descr > span');
                     $('.card-descr').empty().prepend(span_descr).append(data.comment_text);
