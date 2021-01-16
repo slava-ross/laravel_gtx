@@ -73,6 +73,13 @@ class Comment extends Model
      */
     public static function getCommentsByAuthor($authorId)
     {
+        /*
+         * Запрос работает в MariaDB 10.4 в локальной разработке
+         * и не работает на хостинге с MySQL 5.7
+         * А также он возвращает массив, вместо коллекции Eloquent ORM,
+         * что неудобно при пагинации.
+         */
+        /*
         $commentsRaw = DB::select(
             DB::raw("WITH ccc AS (
                 SELECT comment_id, GROUP_CONCAT(ct.name SEPARATOR ', ') names
@@ -102,8 +109,24 @@ class Comment extends Model
                 ORDER BY com.created_at DESC"
             )
         );
-
         $comments = collect($commentsRaw);
+        */
+
+        $names = DB::table('city_comment as cc')
+            ->leftJoin('cities as ct', 'cc.city_id', '=', 'ct.id')
+            ->select('comment_id', DB::raw("GROUP_CONCAT(ct.name SEPARATOR ', ') city_names"))
+            ->groupBy('comment_id');
+
+        $comments = DB::table('comments as com')
+            ->joinSub($names, 'names', function ($join) {
+                $join->on('names.comment_id','=', 'com.id');
+            })
+            ->where('com.user_id', '=', $authorId)
+            ->join('users as u', 'com.user_id', '=', 'u.id')
+            ->addSelect('com.id as id','title','comment_text','rating','img','com.created_at','u.id as user_id','u.fio','u.email','u.phone','names.city_names')
+            ->orderBy('com.created_at', 'desc')
+            ->paginate(4);
+
         return $comments;
     }
 }

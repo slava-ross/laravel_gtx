@@ -14,9 +14,9 @@
                 <div class="card">
                     <div class="card-header"><h3>{{ Str::length($comment->title) > 30 ? Str::substr($comment->title, 0, 30) . '...' : $comment->title }}</h3></div>
                     <div class="card-body">
-                        <div class="card-img mb-1" style="background-image: url({{ empty($comment->img) ? asset('images/default.jpg') : asset($comment->img) }})"></div>
+                        <div class="card-img mb-1 img-fluid" style="background-image: url({{ empty($comment->img) ? asset('images/default.jpg') : asset($comment->img) }})"></div>
                         @if(isset($fio))
-                            <div class="card-city mb-1"><span class="font-weight-bold">Город(а):</span> {{ $comment->names }}</div>
+                            <div class="card-city mb-1"><span class="font-weight-bold">Город(а):</span> {{ $comment->city_names }}</div>
                         @endif
                         <div class="card-descr mb-1"><span class="font-weight-bold">Отзыв:</span> {{ Str::length($comment->comment_text) > 30 ? Str::substr($comment->comment_text, 0, 30) . '...' : $comment->comment_text }}</div>
                         <div class="card-author mb-1"><span class="font-weight-bold">Автор:</span> {{ $comment->fio }}</div>
@@ -27,10 +27,8 @@
             </div>
             @endforeach
         </div>
-        <div class="row links">
-            @if(!isset($fio))
+        <div class="row links d-flex justify-content-center">
             {{ $comments->appends(request()->query())->links() }}
-            @endif
         </div>
     @endif
 @endsection

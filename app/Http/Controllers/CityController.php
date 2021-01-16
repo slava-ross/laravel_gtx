@@ -25,11 +25,11 @@ class CityController extends Controller
         else {
             $ip_address = $request->ip();
             // --- Заглушка для dev_mode ---
-            /*
+
             if ($ip_address === "127.0.0.1") {
                  $ip_address = '78.85.1.5'; // Ижевск (Закомментировать в dev_mode для получения списка городов с отзывами)
             }
-            */
+
             $city_name = City::getCityNameByIP($ip_address);
             // --- Если не получилось определить город ---
             if(empty($city_name)) {
