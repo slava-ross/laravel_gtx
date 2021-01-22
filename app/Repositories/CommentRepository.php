@@ -30,8 +30,7 @@ class CommentRepository implements CommentRepositoryInterface
     public function getCommentsByCityName($cityName)
     {
         $city = City::where('name', $cityName)->first();
-        $comments = $this->getCommentsByCityId($city->id);
-        return $comments;
+        return $this->getCommentsByCityId($city->id);
     }
 
     /**
@@ -41,7 +40,7 @@ class CommentRepository implements CommentRepositoryInterface
      */
     public function getCommentsByCityId($cityId)
     {
-        $comments = $this->model->join('users as u', 'user_id', '=', 'u.id')
+        return $this->model->join('users as u', 'user_id', '=', 'u.id')
             ->join('city_comment as cc', 'comments.id', '=', 'cc.comment_id')
             ->leftJoin('cities as c', 'city_id', '=', 'c.id')
             ->select(
@@ -61,7 +60,6 @@ class CommentRepository implements CommentRepositoryInterface
             ->where('c.id', '=', $cityId)
             ->orderBy('comments.created_at', 'desc')
             ->paginate(4);
-        return $comments;
     }
 
     /**
@@ -76,7 +74,7 @@ class CommentRepository implements CommentRepositoryInterface
             ->select('comment_id', DB::raw("GROUP_CONCAT(ct.name SEPARATOR ', ') city_names"))
             ->groupBy('comment_id');
 
-        $comments = DB::table('comments as com')
+        return DB::table('comments as com')
             ->joinSub($names, 'names', function ($join) {
                 $join->on('names.comment_id','=', 'com.id');
             })
@@ -85,8 +83,6 @@ class CommentRepository implements CommentRepositoryInterface
             ->addSelect('com.id as id','title','comment_text','rating','img','com.created_at','u.id as user_id','u.fio','u.email','u.phone','names.city_names')
             ->orderBy('com.created_at', 'desc')
             ->paginate(4);
-
-        return $comments;
     }
 
     /**

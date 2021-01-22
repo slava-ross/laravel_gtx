@@ -24,6 +24,7 @@ class CityRepository implements CityRepositoryInterface
 
     /**
      * Определение имени города по IP-адресу
+     *
      * @param $clientIPAddress
      * @return mixed|null
      */
@@ -36,6 +37,7 @@ class CityRepository implements CityRepositoryInterface
 
     /**
      * Получение объекта "Город" по имени города
+     *
      * @param $cityName
      * @return mixed
      */
@@ -46,8 +48,8 @@ class CityRepository implements CityRepositoryInterface
 
     /**
      * Получение списка городов с отзывами
-     * @return \Illuminate\Support\Collection
      *
+     * @return \Illuminate\Support\Collection
      */
     public function getCitesOfComments()
     {
@@ -62,6 +64,7 @@ class CityRepository implements CityRepositoryInterface
 
     /**
      * Получение списка городов с количеством отзывов по каждому с сортировкой по убыванию количества отзывов
+     *
      * @param $limit
      * @return \Illuminate\Support\Collection
      */

@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class CityController extends Controller
 {
+    /**
+     * Количество городов с отзывами, отображаемых при выборе города
+     *
+     * @const int
+     */
     const CITY_COUNT_LIMIT = 12;
 
     /**
@@ -25,7 +30,7 @@ class CityController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Отображение списка городов
      *
      * @param Request $request
      * @return

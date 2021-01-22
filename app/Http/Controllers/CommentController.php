@@ -38,7 +38,8 @@ class CommentController extends Controller
         // --- Пришли из модального окна только с именем города или из автокомплита с выбором имени города или взяли из сессионной переменной ---
         if (empty($cityId)) {
             $city = $this->service->takeCityByName($cityName);
-            if (empty($city)) { // Новый город
+            // --- Новый город ---
+            if (empty($city)) {
                 $city = $this->service->rememberNewCity(['name' => $cityName]);
             }
             $cityId = $city->id;
