@@ -2,23 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Interfaces\ServicesInterface;
 use App\Http\Requests\CommentRequest;
+use App\Services\Services;
 use Illuminate\Http\Request;
-use App\Comment;
-use App\City;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    public function __construct()
+    /**
+     * @var Services
+     */
+    private $service;
+
+    /**
+     * Конструктор
+     * @param ServicesInterface $service
+     */
+    public function __construct(ServicesInterface $service)
     {
         $this->middleware('auth')->except('index','show');
+        $this->service = $service;
     }
 
     /**
-     * Display a listing of the resource.
+     * Метод отображения списка отзывов
      *
+     * @param Request $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function index(Request $request)
@@ -27,16 +37,14 @@ class CommentController extends Controller
         $cityId = $request->city_id;
         // --- Пришли из модального окна только с именем города или из автокомплита с выбором имени города или взяли из сессионной переменной ---
         if (empty($cityId)) {
-            $city = City::getCityByName($cityName);
+            $city = $this->service->takeCityByName($cityName);
             if (empty($city)) { // Новый город
-                $city = City::create([
-                    'name' => $cityName,
-                ]);
+                $city = $this->service->rememberNewCity(['name' => $cityName]);
             }
             $cityId = $city->id;
         // --- Пришли со страницы выбора города только с id города  ---
         } elseif (empty($cityName)) {
-            $city = City::find($cityId);
+            $city = $this->service->takeCityById($cityId);
             if (!$city) {
                 return redirect()->route('/')->withErrors('Попытка выбрать несуществующий город!');
             }
@@ -46,15 +54,16 @@ class CommentController extends Controller
         if (!$request->session()->has('city_chosen')) {
             session(['city_chosen' => $cityName]);
         }
-        $comments = Comment::getCommentsByCityId($cityId);
+        $comments = $this->service->takeCommentsByCityId($cityId);
         $title = "Отзывы по городу $cityName";
         return view('comments.index', compact('comments','cityName','title'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Отображение формы создания нового отзыва
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Throwable
      */
     public function create()
     {
@@ -71,59 +80,27 @@ class CommentController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Сохранение нового отзыва в хранилище
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(CommentRequest $request)
     {
-        $cities = $request->cities;
-        $comment = new Comment;
-        $comment->fill($request->all());
-        $comment->user_id = \Auth::user()->id;
-        if ($request->file('img')) {
-            $path = Storage::putFile('public', $request->file('img'));
-            $url = Storage::url($path);
-            $comment->img = $url;
-        }
-        $citiesIdArray = []; // --- Массив для хранения id городов ---
-
-        if (!empty($cities)) {
-            foreach ($cities as $cityName){
-                $city = City::getCityByName($cityName);
-                // --- Новый город ---
-                if (empty($city)) {
-                    $city = City::create([
-                        'name' => $cityName,
-                    ]);
-                }
-                $citiesIdArray[] = $city->id;
-            }
-        }
-        else { // --- Если пустой список городов - сохраняем комментарий для всех ---
-            $cityItems = City::all('id')->toArray();
-            foreach($cityItems as $item){
-                $citiesIdArray[] = $item['id'];
-            }
-        }
-        foreach($citiesIdArray as $city_id) {
-            $city = City::find($city_id);
-            $city->comments()->save($comment);
-        }
+        $comment = $this->service->createNewComment($request);
         session(['success' => 'Отзыв успешно создан!']);
         return \Response::json(['success' => 'true']);
     }
 
     /**
-     * Display the specified resource.
+     * Отобразить определённый отзыв
      *
      * @param  int  $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function show($id)
     {
-        $comment = Comment::find($id);
+        $comment = $this->service->takeCommentById($id);
         if (!$comment) {
             return redirect()->route('/')->withErrors('Попытка посмотреть несуществующий отзыв!');
         }
@@ -132,14 +109,14 @@ class CommentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Отображение формы редактирования определённого отзыва
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function edit($id)
     {
-        $comment = Comment::find($id);
+        $comment = $this->service->takeCommentById($id);
         if ($comment->user_id != \Auth::user()->id) {
             return \Response::json(['errors' => ['Вы не можете редактировать данный отзыв!']], 403);
         }
@@ -153,7 +130,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Обновление отредактированного отзыва в хранилище
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -161,20 +138,8 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, $id)
     {
-        $comment = Comment::find($id);
+        $comment = $this->service->updateComment($request, $id);
 
-        $comment->fill($request->all());
-        if (empty($request->img_leave)) {
-            if ($request->file('img')) {
-                $path = Storage::putFile('public', $request->file('img'));
-                $url = Storage::url($path);
-                $comment->img = $url;
-            }
-            else {
-                $comment->img = null;
-            }
-        }
-        $comment->update();
         return \Response::json([
             'success' => 'Отзыв успешно изменён!',
             'title' => $comment->title,
@@ -184,32 +149,31 @@ class CommentController extends Controller
         ]);
     }
     /**
-     * Remove the specified resource from storage.
+     * Удаление определённого отзыва из хранилища
      *
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        $comment = Comment::find($id);
+        $comment = $this->service->takeCommentById($id);
         if ($comment->user_id != \Auth::user()->id) {
             return \Response::json(['errors' => ['Вы не можете удалить данный отзыв!']], 403);
         }
-        Storage::disk('public')->delete(basename($comment->img));
-        $comment->delete();
+        $this->service->deleteComment($comment);
 
         session(['success' => 'Отзыв успешно удалён!']);
         return \Response::json(['success' => 'true']);
     }
     /**
-     * Get all comments of a certain author.
+     * Получение всех отзывов определённого автора
      *
      * @param  int  $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function getAuthorsComments($id)
     {
-            $comments = Comment::getCommentsByAuthor($id);
+            $comments = $this->service->takeCommentsByAuthor($id);
             if ($comments->isEmpty()) {
                 return redirect()->route('/')->withErrors('Попытка посмотреть отзывы несуществующего автора!');
             }
