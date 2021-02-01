@@ -94,6 +94,8 @@ $(document).ready(function() {
         formatResult: formatResult,
         formatSelected: formatSelected,
         onSelect: function (suggestion) {
+            let token = $('input[name="_token"]').attr('value');
+            document.location.href = '/comment?_token=' + token + '&city_name=' + suggestion.data.city;
         }
     });
 
@@ -110,7 +112,7 @@ $(document).ready(function() {
             formatResult: formatResult,
             formatSelected: formatSelected,
             onSelect: function (suggestion) {
-                cityName = suggestion.data.city;
+                let cityName = suggestion.data.city;
                 let deleteFlag = false;
 
                 // Удаление существующего города из списка и скрытого селекта

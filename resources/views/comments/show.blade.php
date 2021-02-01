@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header"><h3 id="title">{{ $comment->title }}</h3></div>
+                <div class="card-header"><h1 id="title">{{ $comment->title }}</h1></div>
                 <div class="card-body">
                     <div class="card-img card-img__max mb-1 img-fluid" style="background-image: url({{ empty($comment->img) ? asset('images/default.jpg') : asset($comment->img) }})"></div>
                     <div class="card-descr mb-1"><span class="font-weight-bold">Отзыв: </span>{{ $comment->comment_text }}</div>
@@ -43,7 +43,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="author-modal-label">Автор: {{ $user->fio }}</h5>
+                        <h1 class="modal-title" id="author-modal-label">Автор: {{ $user->fio }}</h1>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

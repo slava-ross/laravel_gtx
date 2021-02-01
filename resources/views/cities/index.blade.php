@@ -20,10 +20,11 @@
                 <form action="{{ url('/comment') }}" method="get">
                     @csrf
                     <div class="col-md-6">
-                        <h3 class="form-group mb-3">Выбор города</h3>
+                        <h1 class="form-group mb-3">Выбор города</h1>
                         <div class="form-group mb-3">
-                            <input id="city" class="form-control city" type="text" name="city_name" placeholder="Начните писать ваш город ...">
-                            <input type="submit" value="Выбрать" class="btn btn-primary mt-3">
+                            <input id="city" class="form-control city" type="search" name="city_name" placeholder="Начните писать ваш город ...">
+                            <!-- input id="city" class="form-control city" type="text" name="city_name" placeholder="Начните писать ваш город ..." -->
+                            <!-- input type="submit" value="Выбрать" class="btn btn-primary mt-3" -->
                         </div>
                     </div>
                 </form>

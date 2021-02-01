@@ -4,9 +4,9 @@
 Пожалуйста, пройдите по следующей ссылке для завершения регистрации:
 
 @component('mail::button', ['url' => route('register.verify', ['token' => $user->verify_token])])
-    Verify Email
+    Подтвердить E-mail
 @endcomponent
 
-Спасибо!,<br>
+Спасибо,<br>
 {{ config('app.name') }}
 @endcomponent

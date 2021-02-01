@@ -1,6 +1,6 @@
 <div class="modal-content">
     <div class="modal-header">
-        <h5 class="modal-title" id="comment-modal-label">{{ $modal_title }}</h5>
+        <h2 class="modal-title" id="comment-modal-label">{{ $modal_title }}</h2>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>

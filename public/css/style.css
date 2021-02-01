@@ -4,13 +4,21 @@ body {
 nav {
     margin-bottom: 15px;
 }
+h1 {
+    font-size: large;
+    font-weight: bold;
+}
+h2 {
+    font-size: medium;
+    font-weight: bold;
+}
 .navbar-brand {
     padding: 3px;
     background-color: darkgray;
     border-radius: 4px;
     border: #777 1px solid;
 }
-.container>h3 {
+.container>h1 {
     margin-bottom: 20px;
 }
 .card {
