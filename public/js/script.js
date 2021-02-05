@@ -373,7 +373,7 @@ $(document).ready(function() {
             success: function (data) {
                 $("#comment-modal-lg").modal('hide');
                 let message = data.success;
-                let image = (data.img === null) ? 'http://laravel_gtx/images/default.jpg' : data.img;
+                let image = (data.img === null) ? 'http://laravel_gtx/images/default.png' : data.img;
                 if(message) {
                     let successFlash = createFlash(message, 'success');
                     $('.container-main').prepend(successFlash);
