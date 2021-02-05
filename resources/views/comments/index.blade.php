@@ -4,22 +4,19 @@
 
     @if($comments->isEmpty())
         @if(isset($cityName))
-            <h2 class="mx-auto">Нет отзывов по городу "<?=htmlspecialchars($cityName)?>"</h2>
+            <h1 class="mx-auto">Нет отзывов по городу "<?=htmlspecialchars($cityName)?>"</h1>
         @endif
-        {{-- @if(isset($fio))
-            <h2>У автора "<?=htmlspecialchars($fio)?> нет отзывов"</h2>
-        @endif --}}
     @else
-        <h2 class="mx-auto">{{ $title }}</h2>
+        <h1 class="mx-auto text-center">{{ $title }}</h1>
         <div class="row">
             @foreach($comments as $comment)
             <div class="col-6">
                 <div class="card">
                     <div class="card-header"><h2>{{ Str::length($comment->title) > 30 ? Str::substr($comment->title, 0, 30) . '...' : $comment->title }}</h2></div>
                     <div class="card-body">
-                        <div class="card-img mb-1" style="background-image: url({{ $comment->img ?? asset('images/default.jpg') }})"></div>
+                        <div class="card-img mb-1 img-fluid" style="background-image: url({{ empty($comment->img) ? asset('images/default.jpg') : asset($comment->img) }})"></div>
                         @if(isset($fio))
-                            <div class="card-city mb-1"><span class="font-weight-bold">Город:</span> {{ $comment->city_name }}</div>
+                            <div class="card-city mb-1"><span class="font-weight-bold">Город(а):</span> {{ $comment->city_names }}</div>
                         @endif
                         <div class="card-descr mb-1"><span class="font-weight-bold">Отзыв:</span> {{ Str::length($comment->comment_text) > 30 ? Str::substr($comment->comment_text, 0, 30) . '...' : $comment->comment_text }}</div>
                         <div class="card-author mb-1"><span class="font-weight-bold">Автор:</span> {{ $comment->fio }}</div>
@@ -30,6 +27,8 @@
             </div>
             @endforeach
         </div>
-        {{ $comments->appends(request()->query())->links() }}
+        <div class="row links d-flex justify-content-center">
+            {{ $comments->appends(request()->query())->links() }}
+        </div>
     @endif
 @endsection

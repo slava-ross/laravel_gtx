@@ -3,10 +3,10 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header"><h2>{{ $comment->title }}</h2></div>
+                <div class="card-header"><h1 id="title">{{ $comment->title }}</h1></div>
                 <div class="card-body">
-                    <div class="card-img card-img__max mb-1" style="background-image: url({{ $comment->img ?? asset('images/default.jpg')}})"></div>
-                    <div class="card-descr mb-1"><span class="font-weight-bold">Отзыв:</span> {{ $comment->comment_text }}</div>
+                    <div class="card-img card-img__max mb-1 img-fluid" style="background-image: url({{ empty($comment->img) ? asset('images/default.jpg') : asset($comment->img) }})"></div>
+                    <div class="card-descr mb-1"><span class="font-weight-bold">Отзыв: </span>{{ $comment->comment_text }}</div>
                     <div class="card-author mb-1">
                         <span class="font-weight-bold">Автор:</span>
                         @guest()
@@ -16,18 +16,16 @@
                             <a class="nav-link d-inline-block author-info" href="#">{{ $user->fio }}</a>
                         @endauth
                     </div>
-                    <div class="card-rating mb-1"><span class="font-weight-bold">Рейтинг:</span> {{ $comment->rating }}</div>
-                    <div class="card-date mb-1"><span class="font-weight-bold">Отзыв создан:</span> {{ $comment->created_at->diffForHumans() }}</div>
+                    <div class="card-rating mb-1"><span class="font-weight-bold">Рейтинг: </span>{{ $comment->rating }}</div>
+                    <div class="card-date mb-1"><span class="font-weight-bold">Отзыв создан: </span>{{ $comment->created_at->diffForHumans() }}</div>
                     <div class="card-btn">
-                        <a href="{{ route('/') }}" class="btn btn-outline-primary">На главную</a>
+                        <a href="{{ route('/') }}" class="btn btn-outline-primary">Назад</a>
                         @auth
                             @if (Auth::user()->id == $comment->user_id)
-                                <a href="{{ route('comment.edit', ['comment'=>$comment->id]) }}" class="btn btn-outline-success">Редактировать</a>
-                                <form action="{{ route('comment.destroy', ['comment'=>$comment->id]) }}" method="post" onsubmit="if (confirm('Точно удалить отзыв?')) { return true } else { return false }">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="submit" class="btn btn-outline-danger" value="Удалить">
-                                </form>
+
+                                <a id="edit-comment" data-attr="{{ route('comment.edit', ['comment'=>$comment->id]) }}" class="btn btn-outline-success">Редактировать</a>
+                                @csrf
+                                <input type="submit" id="delete-comment" class="btn btn-outline-danger delete-comment" data-id="{{ $comment->id }}" value="Удалить">
                             @endif
                         @endauth
                     </div>
@@ -39,28 +37,13 @@
 
 {{-- Модальное окно информации об авторе --}}
 @section('modal')
-    {{--
-        <div id="cityModal" class="modal fade">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        Ваш город: <span>{{ $city_name }}</span>?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="city-confirm" class="btn btn-primary">Да</button>
-                        <button type="button" id="city-another" class="btn btn-secondary" data-dismiss="modal">Выбрать другой</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    --}}
     @auth()
-        <div class="modal fade" id="authorModal" tabindex="-1" role="dialog" aria-labelledby="authorModalLabel"
+        <div class="modal fade" id="author-modal" tabindex="-1" role="dialog" aria-labelledby="authorModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <div>Автор: {{ $user->fio }}</div>
+                        <h1 class="modal-title" id="author-modal-label">Автор: {{ $user->fio }}</h1>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

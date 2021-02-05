@@ -4,11 +4,28 @@ body {
 nav {
     margin-bottom: 15px;
 }
+h1 {
+    font-size: large;
+    font-weight: bold;
+}
+h2 {
+    font-size: medium;
+    font-weight: bold;
+}
+.navbar-brand {
+    padding: 3px;
+    background-color: darkgray;
+    border-radius: 4px;
+    border: #777 1px solid;
+}
+.container>h1 {
+    margin-bottom: 20px;
+}
 .card {
-    margin-bottom: 10px;
+    margin-bottom: 30px;
 }
 .card-img {
-    height: 200px;
+    height: 300px;
     background-position: center center;
     -webkit-background-size: cover;
     background-size: cover;
@@ -46,9 +63,9 @@ img {
 .author-info {
     padding: 0;
 }
-
 .city-shell {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-items: flex-start;
     padding: 0;
@@ -73,9 +90,109 @@ img {
     /*margin: 0 5px;*/
 }
 .city-item__remove:hover {
-    background-color: orange;
+    background-color: darkgray;
     border-radius: 50%;
 }
 .city-multiple {
     cursor: pointer;
+}
+.form-group {
+    text-align: left;
+}
+.form-group label {
+    font-weight: bold;
+}
+input:invalid, textarea:invalid {
+    border-color: red;
+}
+input:valid, textarea:valid {
+    border-color: green;
+}
+svg {
+    height: 0;
+    width: 0;
+}
+
+/* Прелоадер */
+
+#loader {
+    display: none;
+}
+.overlay-loader {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1060;
+}
+.overlay-loader .loader-background {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(44, 71, 98, 0.8);
+}
+.overlay-loader .loader-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -48px 0 0 -48px;
+    font-size: 96px;
+    color: #FFF;
+}
+.overlay-loader .loader-icon.spinning-cog {
+    -webkit-animation: spinning-cog 1.3s infinite ease;
+    -moz-animation: spinning-cog 1.3s infinite ease;
+    -ms-animation: spinning-cog 1.3s infinite ease;
+    -o-animation: spinning-cog 1.3s infinite ease;
+    animation: spinning-cog 1.3s infinite ease;
+}
+@-webkit-keyframes spinning-cog {
+    0% { -webkit-transform: rotate(0deg) }
+    20% { -webkit-transform: rotate(-45deg) }
+    100% { -webkit-transform: rotate(360deg) }
+}
+@-moz-keyframes spinning-cog {
+    0% { -moz-transform: rotate(0deg) }
+    20% { -moz-transform: rotate(-45deg) }
+    100% { -moz-transform: rotate(360deg) }
+}
+@-o-keyframes spinning-cog {
+    0% { -o-transform: rotate(0deg) }
+    20% { -o-transform: rotate(-45deg) }
+    100% { -o-transform: rotate(360deg) }
+}
+@keyframes spinning-cog {
+    0% { transform: rotate(0deg) }
+    20% { transform: rotate(-45deg) }
+    100% { transform: rotate(360deg) }
+}
+@-webkit-keyframes shrinking-cog {
+    0% { -webkit-transform: scale(1) }
+    20% { -webkit-transform: scale(1.2) }
+    100% { -webkit-transform: scale(0) }
+}
+@-moz-keyframes shrinking-cog {
+    0% { -moz-transform: scale(1) }
+    20% { -moz-transform: scale(1.2) }
+    100% { -moz-transform: scale(0) }
+}
+@-o-keyframes shrinking-cog {
+    0% { -o-transform: scale(1) }
+    20% { -o-transform: scale(1.2) }
+    100% { -o-transform: scale(0) }
+}
+@keyframes shrinking-cog {
+    0% { transform: scale(1) }
+    20% { transform: scale(1.2) }
+    100% { transform: scale(0) }
+}
+.overlay-loader .loader-icon.shrinking-cog {
+    -webkit-animation: shrinking-cog .3s 1 ease forwards;
+    -moz-animation: shrinking-cog .3s 1 ease forwards;
+    -ms-animation: shrinking-cog .3s 1 ease forwards;
+    -o-animation: shrinking-cog .3s 1 ease forwards;
+    animation: shrinking-cog .3s 1 ease forwards;
 }
